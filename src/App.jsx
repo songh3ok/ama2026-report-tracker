@@ -31,7 +31,9 @@ export function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          const savedMap = {};
+          parsed.forEach(p => { savedMap[p.id] = p; });
+          return INITIAL_SPEAKERS.map(item => savedMap[item.id] || item);
         }
       }
     } catch (e) {

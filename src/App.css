@@ -628,6 +628,12 @@
   border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
+.banner-biblical {
+  background: rgba(14, 165, 233, 0.18);
+  color: #7dd3fc;
+  border: 1px solid rgba(14, 165, 233, 0.35);
+}
+
 .banner-global {
   background: rgba(168, 85, 247, 0.18);
   color: #d8b4fe;
@@ -713,6 +719,11 @@
 .role-respondent {
   background: rgba(168, 85, 247, 0.25);
   color: #e9d5ff;
+}
+
+.role-expositor {
+  background: rgba(14, 165, 233, 0.25);
+  color: #bae6fd;
 }
 
 .role-reporter {

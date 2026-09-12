@@ -1,5 +1,61 @@
 export const INITIAL_SPEAKERS = [
-  // 1. Plenary Sessions - 14 speakers
+  // 1. Biblical Exegesis - Dr. Allen Yeh (3 Days)
+  {
+    id: "biblical-15",
+    category: "biblical_exegesis",
+    categoryLabel: "Biblical Exegesis",
+    sessionTitle: "Biblical Exegesis (Day 1)",
+    role: "Expositor",
+    speakerName: "Dr. Allen Yeh",
+    affiliationOrCountry: "Biblical Exegesis",
+    date: "2026-09-15",
+    dateLabel: "Sep 15 (Tue)",
+    time: "08:50 - 09:30",
+    status: "pending",
+    submittedAt: null,
+    documentTitle: "",
+    documentUrl: "",
+    notes: "",
+    contactEmail: ""
+  },
+  {
+    id: "biblical-16",
+    category: "biblical_exegesis",
+    categoryLabel: "Biblical Exegesis",
+    sessionTitle: "Biblical Exegesis (Day 2)",
+    role: "Expositor",
+    speakerName: "Dr. Allen Yeh",
+    affiliationOrCountry: "Biblical Exegesis",
+    date: "2026-09-16",
+    dateLabel: "Sep 16 (Wed)",
+    time: "08:50 - 09:30",
+    status: "pending",
+    submittedAt: null,
+    documentTitle: "",
+    documentUrl: "",
+    notes: "",
+    contactEmail: ""
+  },
+  {
+    id: "biblical-17",
+    category: "biblical_exegesis",
+    categoryLabel: "Biblical Exegesis",
+    sessionTitle: "Biblical Exegesis (Day 3)",
+    role: "Expositor",
+    speakerName: "Dr. Allen Yeh",
+    affiliationOrCountry: "Biblical Exegesis",
+    date: "2026-09-17",
+    dateLabel: "Sep 17 (Thu)",
+    time: "08:50 - 09:30",
+    status: "pending",
+    submittedAt: null,
+    documentTitle: "",
+    documentUrl: "",
+    notes: "",
+    contactEmail: ""
+  },
+
+  // 2. Plenary Sessions - 14 speakers
   {
     id: "plenary-1-speaker",
     category: "plenary",
@@ -253,7 +309,7 @@ export const INITIAL_SPEAKERS = [
     contactEmail: ""
   },
 
-  // 2. Global Links Reports - 6 speakers
+  // 3. Global Links Reports - 6 speakers
   {
     id: "global-1",
     category: "global_links",
@@ -363,7 +419,7 @@ export const INITIAL_SPEAKERS = [
     contactEmail: ""
   },
 
-  // 3. National Reports - 4 speakers
+  // 4. National Reports - 4 speakers
   {
     id: "national-1",
     category: "national_reports",

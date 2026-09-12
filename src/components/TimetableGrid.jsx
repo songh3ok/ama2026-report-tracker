@@ -21,7 +21,7 @@ export function TimetableGrid({
         className={`tt-speaker-item ${isSubmitted ? 'is-submitted' : 'is-pending'} ${isDimmed ? 'dimmed' : ''}`}
       >
         <div className="tt-speaker-header">
-          <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : 'role-reporter'}`}>
+          <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
             {speaker.role}
           </span>
           
@@ -135,14 +135,32 @@ export function TimetableGrid({
               </td>
             </tr>
 
-            {/* AM 8:50-9:30 */}
-            <tr className="tt-row-common">
-              <td className="cell-time">8:50-9:30</td>
+            {/* AM 8:50-9:30: BIBLICAL EXEGESIS (INDIVIDUAL PER DAY) */}
+            <tr className="tt-row-target-highlight">
+              <td className="cell-time highlight-time">8:50-9:30</td>
               <td className="cell-min">40</td>
-              <td colSpan={3} className="cell-static">
-                <div className="static-title">BIBLICAL EXEGESIS</div>
-                <div className="static-sub">Dr. Allen Yeh</div>
+              {/* Tue: Day 1 */}
+              <td className="cell-target">
+                <div className="tt-session-banner banner-biblical">
+                  BIBLICAL EXEGESIS (DAY 1)
+                </div>
+                {renderSpeakerBox("biblical-15")}
               </td>
+              {/* Wed: Day 2 */}
+              <td className="cell-target">
+                <div className="tt-session-banner banner-biblical">
+                  BIBLICAL EXEGESIS (DAY 2)
+                </div>
+                {renderSpeakerBox("biblical-16")}
+              </td>
+              {/* Thu: Day 3 */}
+              <td className="cell-target">
+                <div className="tt-session-banner banner-biblical">
+                  BIBLICAL EXEGESIS (DAY 3)
+                </div>
+                {renderSpeakerBox("biblical-17")}
+              </td>
+              {/* Fri: Praise & Worship */}
               <td className="cell-static">
                 <div className="static-title">PRAISE & WORSHIP</div>
               </td>

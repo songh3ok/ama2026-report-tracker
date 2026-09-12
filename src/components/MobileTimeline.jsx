@@ -17,12 +17,18 @@ export function MobileTimeline({
     { key: '2026-09-18', label: 'Sep 18 (Fri)' }
   ];
 
-  // Grouped sessions by day in English
+  // Grouped sessions by day including Biblical Exegesis
   const timelineSchedule = [
     {
       date: '2026-09-15',
       dateLabel: 'Sep 15 (Tue)',
       sessions: [
+        {
+          time: '08:50 - 09:30',
+          category: 'biblical',
+          title: 'BIBLICAL EXEGESIS (DAY 1)',
+          speakerIds: ['biblical-15']
+        },
         {
           time: '09:40 - 10:30',
           category: 'plenary',
@@ -54,6 +60,12 @@ export function MobileTimeline({
       dateLabel: 'Sep 16 (Wed)',
       sessions: [
         {
+          time: '08:50 - 09:30',
+          category: 'biblical',
+          title: 'BIBLICAL EXEGESIS (DAY 2)',
+          speakerIds: ['biblical-16']
+        },
+        {
           time: '09:40 - 10:30',
           category: 'plenary',
           title: 'PLENARY: Religious Pluralism',
@@ -77,6 +89,12 @@ export function MobileTimeline({
       date: '2026-09-17',
       dateLabel: 'Sep 17 (Thu)',
       sessions: [
+        {
+          time: '08:50 - 09:30',
+          category: 'biblical',
+          title: 'BIBLICAL EXEGESIS (DAY 3)',
+          speakerIds: ['biblical-17']
+        },
         {
           time: '09:40 - 10:30',
           category: 'plenary',
@@ -122,6 +140,7 @@ export function MobileTimeline({
     : timelineSchedule.filter(d => d.date === selectedDay);
 
   const getCategoryClass = (cat) => {
+    if (cat === 'biblical') return 'banner-biblical';
     if (cat === 'plenary') return 'banner-plenary';
     if (cat === 'global') return 'banner-global';
     return 'banner-national';
@@ -184,7 +203,7 @@ export function MobileTimeline({
                             onClick={() => onOpenEdit(speaker)}
                           >
                             <div className="mobile-card-row-top">
-                              <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : 'role-reporter'}`}>
+                              <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
                                 {speaker.role}
                               </span>
                               
