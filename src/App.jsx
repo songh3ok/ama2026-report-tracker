@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { INITIAL_SPEAKERS, CONVENTION_INFO } from './data/speakersData';
 import { TimetableGrid } from './components/TimetableGrid';
+import { MobileTimeline } from './components/MobileTimeline';
 import { DetailModal } from './components/DetailModal';
 import { 
   FileSpreadsheet, 
   RefreshCw, 
   Sun, 
   Moon, 
-  Search, 
-  AlertCircle, 
   CheckCircle2, 
   Clock,
   Eye,
-  Calendar
+  Calendar,
+  Smartphone,
+  LayoutGrid
 } from 'lucide-react';
 
 const STORAGE_KEY = 'ama2026_timetable_v2';
@@ -39,8 +40,15 @@ export function App() {
     return INITIAL_SPEAKERS;
   });
 
+  // View Mode: 'mobile' (touch timeline) vs 'desktop' (full PDF grid)
+  const [viewMode, setViewMode] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      return 'mobile';
+    }
+    return 'desktop';
+  });
+
   const [highlightPendingOnly, setHighlightPendingOnly] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpeaker, setSelectedSpeaker] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
 
@@ -55,12 +63,21 @@ export function App() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(speakers));
   }, [speakers]);
 
+  // Responsive resize check
+  useEffect(() => {
+    const handleResize = () => {
+      // Optional: don't override user's manual choice unless initial load
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const showToast = (text) => {
     setToastMsg(text);
     setTimeout(() => setToastMsg(null), 2500);
   };
 
-  // Convert array to map for instant lookup by ID in the timetable
+  // Convert array to map for fast lookup
   const speakersMap = React.useMemo(() => {
     const map = {};
     speakers.forEach(s => {
@@ -81,7 +98,7 @@ export function App() {
         showToast(
           isNowSubmitted 
             ? `✓ ${item.speakerName} [제출 완료] (${formatted})` 
-            : `ℹ ${item.speakerName} [미제출]로 변경되었습니다.`
+            : `ℹ ${item.speakerName} [미제출]로 전환되었습니다.`
         );
 
         return {
@@ -156,11 +173,11 @@ export function App() {
         <div className="header-info">
           <div className="convention-badge">
             <Calendar size={13} />
-            <span>The 15th AMA Triennial Convention, Incheon 2026</span>
+            <span>The 15th AMA Triennial Convention 2026</span>
           </div>
-          <h1 className="header-heading">발표자료 실시간 접수 모니터링 일정표</h1>
+          <h1 className="header-heading">발표자료 실시간 접수 모니터링</h1>
           <p className="header-subheading">
-            {CONVENTION_INFO.theme} · 2026. 9. 14(월) ~ 9. 18(금)
+            {CONVENTION_INFO.theme} · 9. 14(월) ~ 9. 18(금)
           </p>
         </div>
 
@@ -175,7 +192,7 @@ export function App() {
           </button>
           <button className="btn-simple" onClick={handleExportCSV} title="Excel CSV 다운로드">
             <FileSpreadsheet size={15} className="text-emerald-400" />
-            <span>CSV 저장</span>
+            <span className="hide-on-mobile">CSV</span>
           </button>
           <button className="btn-simple btn-muted" onClick={handleReset} title="초기화">
             <RefreshCw size={14} />
@@ -187,13 +204,13 @@ export function App() {
       <div className="summary-strip glass-panel">
         <div className="kpi-group">
           <div className="kpi-pill kpi-total">
-            <span className="kpi-label">전체 대상</span>
+            <span className="kpi-label">전체</span>
             <strong className="kpi-val">{totalCount}명</strong>
           </div>
           <div className="kpi-pill kpi-submitted">
             <CheckCircle2 size={15} className="text-emerald-400" />
-            <span className="kpi-label">제출 완료</span>
-            <strong className="kpi-val text-emerald-400">{submittedCount}명</strong>
+            <span className="kpi-label">제출</span>
+            <strong className="kpi-val text-emerald-400">{submittedCount}</strong>
             <span className="kpi-badge">({percent}%)</span>
           </div>
           <div className="kpi-pill kpi-pending">
@@ -204,27 +221,56 @@ export function App() {
         </div>
 
         <div className="filter-controls">
+          {/* View mode switcher */}
+          <div className="view-mode-pill">
+            <button
+              className={`view-pill-btn ${viewMode === 'mobile' ? 'active' : ''}`}
+              onClick={() => setViewMode('mobile')}
+              title="모바일 맞춤 일자별 목록"
+            >
+              <Smartphone size={14} />
+              <span>일자별</span>
+            </button>
+            <button
+              className={`view-pill-btn ${viewMode === 'desktop' ? 'active' : ''}`}
+              onClick={() => setViewMode('desktop')}
+              title="전체 PDF 타임테이블 격자"
+            >
+              <LayoutGrid size={14} />
+              <span>전체 표</span>
+            </button>
+          </div>
+
           <button 
             className={`toggle-filter-btn ${highlightPendingOnly ? 'active' : ''}`}
             onClick={() => setHighlightPendingOnly(prev => !prev)}
           >
             <Eye size={14} />
-            <span>{highlightPendingOnly ? '전체 보기' : '🔴 미제출자만 강조'}</span>
+            <span>{highlightPendingOnly ? '전체' : '🔴 미제출자만'}</span>
           </button>
         </div>
       </div>
 
       <div className="table-guide-notice">
-        <span>💡 <strong>이용 안내:</strong> 일정표 각 칸의 강사 박스에서 <strong>[제출/미제출]</strong> 버튼을 누르면 즉시 상태가 바뀌고 날짜와 시간이 자동 저장됩니다. 박스를 클릭하면 세부 링크나 원고 제목을 입력할 수 있습니다.</span>
+        <span>💡 <strong>실시간 안내:</strong> 강사 박스를 터치/클릭하면 <strong>제출완료(초록) / 미제출(빨강)</strong>로 즉시 전환되고 일시가 자동 저장됩니다.</span>
       </div>
 
-      {/* Program Timetable Grid */}
-      <TimetableGrid
-        speakersMap={speakersMap}
-        onToggleStatus={handleToggleStatus}
-        onOpenEdit={(spk) => setSelectedSpeaker(spk)}
-        highlightPendingOnly={highlightPendingOnly}
-      />
+      {/* Main Content: Mobile Timeline or PDF Grid */}
+      {viewMode === 'mobile' ? (
+        <MobileTimeline
+          speakersMap={speakersMap}
+          onToggleStatus={handleToggleStatus}
+          onOpenEdit={(spk) => setSelectedSpeaker(spk)}
+          highlightPendingOnly={highlightPendingOnly}
+        />
+      ) : (
+        <TimetableGrid
+          speakersMap={speakersMap}
+          onToggleStatus={handleToggleStatus}
+          onOpenEdit={(spk) => setSelectedSpeaker(spk)}
+          highlightPendingOnly={highlightPendingOnly}
+        />
+      )}
 
       {/* Detail Edit Modal */}
       <DetailModal

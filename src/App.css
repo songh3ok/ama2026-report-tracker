@@ -1,9 +1,9 @@
-/* Streamlined Timetable Design matching AMA 2026 PDF Program */
+/* Streamlined Timetable & Mobile Friendly Design */
 
 .simple-app-wrapper {
   max-width: 1560px;
   margin: 0 auto;
-  padding: 20px 16px 60px;
+  padding: 16px 14px 60px;
 }
 
 /* Header */
@@ -12,9 +12,9 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 22px 28px;
-  margin-bottom: 16px;
+  gap: 14px;
+  padding: 18px 22px;
+  margin-bottom: 12px;
   background: linear-gradient(135deg, rgba(30, 58, 138, 0.28) 0%, rgba(15, 23, 42, 0.7) 100%);
   border: 1px solid rgba(59, 130, 246, 0.25);
 }
@@ -23,24 +23,24 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #93c5fd;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
 }
 
 .header-heading {
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.01em;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .header-subheading {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   font-style: italic;
 }
@@ -55,7 +55,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -63,6 +63,7 @@
   font-size: 0.84rem;
   font-weight: 600;
   transition: all 0.2s ease;
+  min-height: 38px;
 }
 
 .btn-simple:hover {
@@ -81,15 +82,15 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  padding: 12px 20px;
-  margin-bottom: 12px;
+  gap: 12px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
 }
 
 .kpi-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -97,11 +98,11 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 999px;
   background: var(--bg-glass);
   border: 1px solid var(--border-color);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
 }
 
 .kpi-label {
@@ -115,7 +116,7 @@
 }
 
 .kpi-badge {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: #34d399;
   font-weight: 700;
 }
@@ -130,18 +131,51 @@
   border-color: rgba(239, 68, 68, 0.3);
 }
 
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* View Mode Pill */
+.view-mode-pill {
+  display: inline-flex;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.view-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.view-pill-btn.active {
+  background: var(--accent-blue);
+  color: #ffffff;
+}
+
 .toggle-filter-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  gap: 5px;
+  padding: 6px 13px;
   border-radius: 999px;
   background: var(--bg-glass);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 600;
   transition: all 0.2s ease;
+  min-height: 36px;
 }
 
 .toggle-filter-btn:hover {
@@ -157,12 +191,220 @@
 }
 
 .table-guide-notice {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  padding: 4px 6px 12px;
+  padding: 2px 4px 10px;
+  line-height: 1.4;
 }
 
-/* Timetable Container */
+/* ============================================================ */
+/* MOBILE TIMELINE VIEW (Phone & Touchscreen Optimized)        */
+/* ============================================================ */
+
+.mobile-timeline-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mobile-day-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-day-tab {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.mobile-day-tab.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+}
+
+.mobile-days-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-day-card {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mobile-day-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-day-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.mobile-sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mobile-session-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.mobile-session-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobile-time-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.18);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.mobile-speakers-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-speaker-card {
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* Submitted in Mobile: Green */
+.mobile-speaker-card.is-submitted {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1.5px solid #10b981;
+}
+
+/* Pending in Mobile: Red */
+.mobile-speaker-card.is-pending {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1.5px solid #ef4444;
+}
+
+.mobile-card-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  min-height: 32px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.mobile-toggle-btn.btn-submitted {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.mobile-toggle-btn.btn-pending {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.mobile-speaker-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.mobile-speaker-affil {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.mobile-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.78rem;
+}
+
+.mobile-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mobile-link-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #60a5fa;
+  text-decoration: underline;
+  padding: 2px 6px;
+}
+
+.mobile-edit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-glass);
+}
+
+/* ============================================================ */
+/* DESKTOP TIMETABLE GRID (PDF MATCH)                          */
+/* ============================================================ */
+
 .timetable-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -170,6 +412,7 @@
   border: 1px solid var(--border-color);
   background: var(--bg-card);
   box-shadow: var(--shadow-subtle);
+  -webkit-overflow-scrolling: touch;
 }
 
 .timetable-table-container {
@@ -372,7 +615,7 @@
   transform: translateY(-1px);
 }
 
-/* Submitted Style: Vibrant Green */
+/* Submitted Style: Green */
 .tt-speaker-item.is-submitted {
   background: rgba(16, 185, 129, 0.15);
   border: 1.5px solid #10b981;
@@ -384,7 +627,7 @@
   background: rgba(16, 185, 129, 0.22);
 }
 
-/* Pending Style: High-Alert Red */
+/* Pending Style: Red */
 .tt-speaker-item.is-pending {
   background: rgba(239, 68, 68, 0.1);
   border: 1.5px solid #ef4444;
@@ -443,10 +686,6 @@
   transition: transform 0.15s ease;
 }
 
-.tt-status-badge:hover {
-  transform: scale(1.05);
-}
-
 .status-submitted {
   background: #10b981;
   color: #ffffff;
@@ -495,18 +734,10 @@
   display: inline-flex;
 }
 
-.tt-link-icon:hover {
-  color: #93c5fd;
-}
-
 .tt-edit-mini-btn {
   color: var(--text-muted);
   display: inline-flex;
   padding: 2px;
-}
-
-.tt-edit-mini-btn:hover {
-  color: var(--text-primary);
 }
 
 /* Modal Compact */
@@ -576,4 +807,38 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   margin-top: 30px;
+}
+
+/* Responsive Mobile Adjustments */
+@media (max-width: 768px) {
+  .simple-app-wrapper {
+    padding: 10px 8px 50px;
+  }
+  .simple-header {
+    padding: 14px 14px;
+  }
+  .header-heading {
+    font-size: 1.2rem;
+  }
+  .hide-on-mobile {
+    display: none;
+  }
+  .summary-strip {
+    padding: 10px 12px;
+  }
+  .kpi-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .filter-controls {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .mobile-day-card {
+    padding: 14px 12px;
+  }
+  .modal-container {
+    padding: 20px 16px;
+  }
 }
