@@ -892,7 +892,7 @@
 }
 
 .th-time {
-  width: 108px;
+  width: 124px;
   font-size: 11.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -928,17 +928,20 @@
   vertical-align: middle;
 }
 
+/* Time / Min digits: same typeface & size as the grid's text */
 .cell-time {
   padding: 8px 12px !important;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   color: var(--text-3);
   white-space: nowrap;
 }
 
 .cell-min {
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   text-align: center;
   color: var(--text-3);
 }
@@ -1655,8 +1658,8 @@
   .th-min { font-size: 13px; }
   .th-day-main { font-size: 16px; }
   .th-day-sub { font-size: 13.5px; }
-  .cell-time { font-size: 13.5px; }
-  .cell-min { font-size: 13px; }
+  .cell-time { font-size: 15.5px; }
+  .cell-min { font-size: 15.5px; }
   .cell-static { font-size: 13px; }
   .static-speaker { font-size: 15px; }
   .tt-head .kicker { font-size: 12px; }
