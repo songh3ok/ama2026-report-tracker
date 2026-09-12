@@ -1,4 +1,4 @@
-/* Streamlined Timetable & Mobile Friendly Design */
+/* Streamlined Timetable & Mobile Friendly Design (English UI) */
 
 .simple-app-wrapper {
   max-width: 1560px;
@@ -198,7 +198,76 @@
 }
 
 /* ============================================================ */
-/* MOBILE TIMELINE VIEW (Phone & Touchscreen Optimized)        */
+/* STATUS TAGS & ACTION BUTTONS (DESKTOP & MOBILE)              */
+/* ============================================================ */
+
+.tt-status-and-action, .mobile-status-and-action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Status indicator pill */
+.tt-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.tag-submitted {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.tag-pending {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* Action button: Submit vs Undo */
+.tt-action-btn, .mobile-action-btn, .modal-action-btn {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-submit {
+  background: #3b82f6;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+}
+
+.btn-submit:hover {
+  background: #2563eb;
+  transform: scale(1.04);
+}
+
+.btn-undo {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-undo:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: #ef4444;
+}
+
+/* ============================================================ */
+/* MOBILE TIMELINE VIEW                                         */
 /* ============================================================ */
 
 .mobile-timeline-wrapper {
@@ -327,29 +396,6 @@
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-}
-
-.mobile-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 999px;
-  min-height: 32px;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.mobile-toggle-btn.btn-submitted {
-  background: #10b981;
-  color: #ffffff;
-}
-
-.mobile-toggle-btn.btn-pending {
-  background: #ef4444;
-  color: #ffffff;
 }
 
 .mobile-speaker-name {
@@ -674,28 +720,6 @@
   color: #fef08a;
 }
 
-.tt-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.status-submitted {
-  background: #10b981;
-  color: #ffffff;
-}
-
-.status-pending {
-  background: #ef4444;
-  color: #ffffff;
-}
-
 .tt-speaker-name {
   font-size: 0.95rem;
   font-weight: 700;
@@ -727,6 +751,12 @@
 .timestamp-pending {
   font-weight: 700;
   color: #f87171;
+}
+
+.tt-mini-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .tt-link-icon {
@@ -761,28 +791,10 @@
   color: var(--text-secondary);
 }
 
-.status-pill-toggle {
-  display: inline-flex;
+.status-toggle-right {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.status-pill-toggle.is-submitted {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  border: 1px solid #10b981;
-}
-
-.status-pill-toggle.is-pending {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-  border: 1px solid #ef4444;
+  gap: 8px;
 }
 
 .simple-toast {

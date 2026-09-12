@@ -60,36 +60,31 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="modal-form">
           {/* Quick Status Bar */}
           <div className="status-toggle-box">
-            <span className="status-toggle-label">제출 상태:</span>
-            <button
-              type="button"
-              className={`status-pill-toggle ${formData.status === 'submitted' ? 'is-submitted' : 'is-pending'}`}
-              onClick={handleToggleStatus}
-            >
-              {formData.status === 'submitted' ? (
-                <>
-                  <CheckCircle2 size={16} />
-                  <span>제출 완료됨 (클릭시 미제출로 변경)</span>
-                </>
-              ) : (
-                <>
-                  <Clock size={16} />
-                  <span>미제출 상태 (클릭시 제출완료로 변경)</span>
-                </>
-              )}
-            </button>
+            <span className="status-toggle-label">Status:</span>
+            <div className="status-toggle-right">
+              <span className={`tt-status-tag ${formData.status === 'submitted' ? 'tag-submitted' : 'tag-pending'}`}>
+                {formData.status === 'submitted' ? 'Submitted' : 'Pending'}
+              </span>
+              <button
+                type="button"
+                className={`modal-action-btn ${formData.status === 'submitted' ? 'btn-undo' : 'btn-submit'}`}
+                onClick={handleToggleStatus}
+              >
+                {formData.status === 'submitted' ? 'Undo Submission' : 'Submit'}
+              </button>
+            </div>
           </div>
 
           {/* Submission Timestamp */}
           <div className="form-group">
             <label className="form-label">
               <Clock size={14} />
-              <span>제출 기록 일시 (날짜 및 시간)</span>
+              <span>Received Timestamp</span>
             </label>
             <input
               type="text"
               className="form-input"
-              placeholder="예: 2026-09-12 14:30 (제출완료 시 자동입력)"
+              placeholder="e.g. 2026-09-12 14:30 (Auto-recorded on submit)"
               value={formData.submittedAt}
               onChange={(e) => setFormData({ ...formData, submittedAt: e.target.value })}
             />
@@ -99,12 +94,12 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
           <div className="form-group">
             <label className="form-label">
               <FileText size={14} />
-              <span>원고 / 발표자료 제목</span>
+              <span>Paper / Presentation Title</span>
             </label>
             <input
               type="text"
               className="form-input"
-              placeholder="발표 주제나 원고 제목 입력..."
+              placeholder="Enter presentation or paper title..."
               value={formData.documentTitle}
               onChange={(e) => setFormData({ ...formData, documentTitle: e.target.value })}
             />
@@ -114,7 +109,7 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
           <div className="form-group">
             <label className="form-label">
               <LinkIcon size={14} />
-              <span>자료 링크 (구글드라이브 / 클라우드 URL)</span>
+              <span>Material Link (Google Drive / OneDrive / Dropbox)</span>
             </label>
             <input
               type="url"
@@ -127,11 +122,11 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
 
           {/* Notes */}
           <div className="form-group">
-            <label className="form-label">메모 / 특이사항</label>
+            <label className="form-label">Notes</label>
             <input
               type="text"
               className="form-input"
-              placeholder="참고사항..."
+              placeholder="Additional notes or memos..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             />
@@ -139,11 +134,11 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
 
           <div className="modal-actions">
             <button type="button" className="btn-secondary" onClick={onClose}>
-              닫기
+              Cancel
             </button>
             <button type="submit" className="btn-primary">
               <Save size={16} />
-              <span>저장하기</span>
+              <span>Save Changes</span>
             </button>
           </div>
         </form>

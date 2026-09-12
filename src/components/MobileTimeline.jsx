@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Clock, ExternalLink, Edit2, Calendar, ChevronRight } from 'lucide-react';
+import { CheckCircle2, Clock, ExternalLink, Edit2, Calendar } from 'lucide-react';
 
 export function MobileTimeline({ 
   speakersMap, 
@@ -10,29 +10,29 @@ export function MobileTimeline({
   const [selectedDay, setSelectedDay] = useState('all');
 
   const DAYS = [
-    { key: 'all', label: '전체' },
-    { key: '2026-09-15', label: '9.15 (화)' },
-    { key: '2026-09-16', label: '9.16 (수)' },
-    { key: '2026-09-17', label: '9.17 (목)' },
-    { key: '2026-09-18', label: '9.18 (금)' }
+    { key: 'all', label: 'All Days' },
+    { key: '2026-09-15', label: 'Sep 15 (Tue)' },
+    { key: '2026-09-16', label: 'Sep 16 (Wed)' },
+    { key: '2026-09-17', label: 'Sep 17 (Thu)' },
+    { key: '2026-09-18', label: 'Sep 18 (Fri)' }
   ];
 
-  // Grouped sessions by day
+  // Grouped sessions by day in English
   const timelineSchedule = [
     {
       date: '2026-09-15',
-      dateLabel: '9.15 (화)',
+      dateLabel: 'Sep 15 (Tue)',
       sessions: [
         {
           time: '09:40 - 10:30',
           category: 'plenary',
-          title: 'PLENARY: AI (인공지능)',
+          title: 'PLENARY: AI (Artificial Intelligence)',
           speakerIds: ['plenary-1-speaker', 'plenary-1-respondent']
         },
         {
           time: '11:10 - 12:00',
           category: 'plenary',
-          title: 'PLENARY: Diaspora (디아스포라)',
+          title: 'PLENARY: Diaspora',
           speakerIds: ['plenary-2-speaker', 'plenary-2-respondent']
         },
         {
@@ -51,18 +51,18 @@ export function MobileTimeline({
     },
     {
       date: '2026-09-16',
-      dateLabel: '9.16 (수)',
+      dateLabel: 'Sep 16 (Wed)',
       sessions: [
         {
           time: '09:40 - 10:30',
           category: 'plenary',
-          title: 'PLENARY: Religious Pluralism (종교다원주의)',
+          title: 'PLENARY: Religious Pluralism',
           speakerIds: ['plenary-3-speaker', 'plenary-3-respondent']
         },
         {
           time: '11:10 - 12:00',
           category: 'plenary',
-          title: 'PLENARY: Justice (정의와 공의)',
+          title: 'PLENARY: Justice',
           speakerIds: ['plenary-4-speaker', 'plenary-4-respondent']
         },
         {
@@ -75,18 +75,18 @@ export function MobileTimeline({
     },
     {
       date: '2026-09-17',
-      dateLabel: '9.17 (목)',
+      dateLabel: 'Sep 17 (Thu)',
       sessions: [
         {
           time: '09:40 - 10:30',
           category: 'plenary',
-          title: 'PLENARY: Healing (치유와 회복)',
+          title: 'PLENARY: Healing',
           speakerIds: ['plenary-5-speaker', 'plenary-5-respondent']
         },
         {
           time: '11:10 - 12:00',
           category: 'plenary',
-          title: 'PLENARY: The Created World (창조세계)',
+          title: 'PLENARY: The Created World',
           speakerIds: ['plenary-6-speaker', 'plenary-6-respondent']
         },
         {
@@ -105,12 +105,12 @@ export function MobileTimeline({
     },
     {
       date: '2026-09-18',
-      dateLabel: '9.18 (금)',
+      dateLabel: 'Sep 18 (Fri)',
       sessions: [
         {
           time: '09:40 - 10:30',
           category: 'plenary',
-          title: 'PLENARY: The Next Generation (다음 세대)',
+          title: 'PLENARY: The Next Generation',
           speakerIds: ['plenary-7-speaker', 'plenary-7-respondent']
         }
       ]
@@ -129,7 +129,7 @@ export function MobileTimeline({
 
   return (
     <div className="mobile-timeline-wrapper">
-      {/* Day selector tabs for quick phone tapping */}
+      {/* Day selector tabs */}
       <div className="mobile-day-tabs">
         {DAYS.map(day => (
           <button
@@ -157,7 +157,7 @@ export function MobileTimeline({
                 const hasPending = speakers.some(s => s.status === 'pending');
 
                 if (highlightPendingOnly && !hasPending) {
-                  return null; // Skip if user asked for pending only
+                  return null;
                 }
 
                 return (
@@ -184,29 +184,37 @@ export function MobileTimeline({
                             onClick={() => onOpenEdit(speaker)}
                           >
                             <div className="mobile-card-row-top">
-                              <span className={`tt-role-pill ${speaker.role.includes('강사') ? 'role-lecturer' : speaker.role.includes('논찬') ? 'role-respondent' : 'role-reporter'}`}>
+                              <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : 'role-reporter'}`}>
                                 {speaker.role}
                               </span>
                               
-                              <button
-                                className={`mobile-toggle-btn ${isSubmitted ? 'btn-submitted' : 'btn-pending'}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onToggleStatus(speaker.id);
-                                }}
-                              >
-                                {isSubmitted ? (
-                                  <>
-                                    <CheckCircle2 size={13} />
-                                    <span>제출완료</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Clock size={13} />
-                                    <span>미제출 (터치하여 제출)</span>
-                                  </>
-                                )}
-                              </button>
+                              <div className="mobile-status-and-action">
+                                {/* Status badge */}
+                                <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
+                                  {isSubmitted ? (
+                                    <>
+                                      <CheckCircle2 size={11} />
+                                      <span>Submitted</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Clock size={11} />
+                                      <span>Pending</span>
+                                    </>
+                                  )}
+                                </span>
+
+                                {/* Action button: "Submit" when pending, "Undo" when submitted */}
+                                <button
+                                  className={`mobile-action-btn ${isSubmitted ? 'btn-undo' : 'btn-submit'}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onToggleStatus(speaker.id);
+                                  }}
+                                >
+                                  {isSubmitted ? 'Undo' : 'Submit'}
+                                </button>
+                              </div>
                             </div>
 
                             <div className="mobile-speaker-name">
@@ -221,11 +229,11 @@ export function MobileTimeline({
                               <div className="mobile-time-record">
                                 {isSubmitted ? (
                                   <span className="text-emerald-400 font-medium">
-                                    ✓ 접수: {speaker.submittedAt || '완료'}
+                                    ✓ Received: {speaker.submittedAt || 'Done'}
                                   </span>
                                 ) : (
                                   <span className="text-rose-400 font-medium">
-                                    🔴 보고 자료 아직 안 들어옴
+                                    🔴 Material not received yet
                                   </span>
                                 )}
                               </div>
@@ -240,7 +248,7 @@ export function MobileTimeline({
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     <ExternalLink size={12} />
-                                    자료
+                                    Link
                                   </a>
                                 )}
                                 <button 
@@ -251,7 +259,7 @@ export function MobileTimeline({
                                   }}
                                 >
                                   <Edit2 size={12} />
-                                  상세
+                                  Details
                                 </button>
                               </div>
                             </div>

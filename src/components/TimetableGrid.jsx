@@ -13,9 +13,6 @@ export function TimetableGrid({
     if (!speaker) return null;
 
     const isSubmitted = speaker.status === 'submitted';
-    const isPending = !isSubmitted;
-
-    // If filter says highlightPendingOnly and this is submitted, we can dim it
     const isDimmed = highlightPendingOnly && isSubmitted;
 
     return (
@@ -24,29 +21,38 @@ export function TimetableGrid({
         className={`tt-speaker-item ${isSubmitted ? 'is-submitted' : 'is-pending'} ${isDimmed ? 'dimmed' : ''}`}
       >
         <div className="tt-speaker-header">
-          <span className={`tt-role-pill ${speaker.role.includes('강사') ? 'role-lecturer' : speaker.role.includes('논찬') ? 'role-respondent' : 'role-reporter'}`}>
-            {speaker.role.split(' ')[0]}
+          <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : 'role-reporter'}`}>
+            {speaker.role}
           </span>
-          <button 
-            className={`tt-status-badge ${isSubmitted ? 'status-submitted' : 'status-pending'}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleStatus(speaker.id);
-            }}
-            title="클릭하여 제출/미제출 전환"
-          >
-            {isSubmitted ? (
-              <>
-                <CheckCircle2 size={12} />
-                <span>제출완료</span>
-              </>
-            ) : (
-              <>
-                <Clock size={12} />
-                <span>미제출</span>
-              </>
-            )}
-          </button>
+          
+          <div className="tt-status-and-action">
+            {/* Status indicator: Pending (Red) or Submitted (Green) */}
+            <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
+              {isSubmitted ? (
+                <>
+                  <CheckCircle2 size={11} />
+                  <span>Submitted</span>
+                </>
+              ) : (
+                <>
+                  <Clock size={11} />
+                  <span>Pending</span>
+                </>
+              )}
+            </span>
+
+            {/* Action button: "Submit" when pending, "Undo" when submitted */}
+            <button 
+              className={`tt-action-btn ${isSubmitted ? 'btn-undo' : 'btn-submit'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleStatus(speaker.id);
+              }}
+              title={isSubmitted ? 'Click to revert to Pending' : 'Click to mark as Submitted'}
+            >
+              {isSubmitted ? 'Undo' : 'Submit'}
+            </button>
+          </div>
         </div>
 
         <div className="tt-speaker-name" onClick={() => onOpenEdit(speaker)}>
@@ -63,35 +69,37 @@ export function TimetableGrid({
         <div className="tt-timestamp-row" onClick={() => onOpenEdit(speaker)}>
           {isSubmitted ? (
             <span className="timestamp-submitted text-emerald-400">
-              ✓ {speaker.submittedAt || '접수완료'}
+              ✓ {speaker.submittedAt || 'Received'}
             </span>
           ) : (
             <span className="timestamp-pending text-rose-400">
-              자료 미접수
+              Not received yet
             </span>
           )}
-          {speaker.documentUrl && (
-            <a 
-              href={speaker.documentUrl} 
-              target="_blank" 
-              rel="noreferrer" 
-              className="tt-link-icon"
-              onClick={(e) => e.stopPropagation()}
-              title="제출 자료 열기"
+          <div className="tt-mini-actions">
+            {speaker.documentUrl && (
+              <a 
+                href={speaker.documentUrl} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="tt-link-icon"
+                onClick={(e) => e.stopPropagation()}
+                title="Open submitted document"
+              >
+                <ExternalLink size={12} />
+              </a>
+            )}
+            <button 
+              className="tt-edit-mini-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenEdit(speaker);
+              }}
+              title="Edit details & links"
             >
-              <ExternalLink size={12} />
-            </a>
-          )}
-          <button 
-            className="tt-edit-mini-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenEdit(speaker);
-            }}
-            title="상세 정보 및 링크 편집"
-          >
-            <Edit2 size={11} />
-          </button>
+              <Edit2 size={11} />
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -105,10 +113,10 @@ export function TimetableGrid({
             <tr className="header-row">
               <th className="th-time">Time</th>
               <th className="th-min">Min</th>
-              <th className="th-day">9.14 (Mon)</th>
+              <th className="th-day">Sep 14 (Mon)</th>
               <th className="th-day">15 (Tue)</th>
               <th className="th-day">16 (Wed)</th>
-              <th className="th-day">17 (Thur)</th>
+              <th className="th-day">17 (Thu)</th>
               <th className="th-day">18 (Fri)</th>
             </tr>
           </thead>
@@ -120,7 +128,6 @@ export function TimetableGrid({
               <td className="cell-muted" rowSpan={6}>
                 <div className="cell-static-content">
                   <div className="static-title">REGISTRATION</div>
-                  <div className="static-sub">등록 및 접수</div>
                 </div>
               </td>
               <td colSpan={4} className="cell-static">
@@ -300,15 +307,15 @@ export function TimetableGrid({
               <td className="cell-muted">-</td>
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-1</div>
-                <div className="ws-note">(A~G 트랙 진행 / 접수 제외)</div>
+                <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-3</div>
-                <div className="ws-note">(A~G 트랙 진행 / 접수 제외)</div>
+                <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-5</div>
-                <div className="ws-note">(A~G 트랙 진행 / 접수 제외)</div>
+                <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
               <td className="cell-muted" rowSpan={6}>-</td>
             </tr>
@@ -330,15 +337,15 @@ export function TimetableGrid({
               <td className="cell-muted">-</td>
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-2</div>
-                <div className="ws-note">(A~G 트랙 진행 / 접수 제외)</div>
+                <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-4</div>
-                <div className="ws-note">(A~G 트랙 진행 / 접수 제외)</div>
+                <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-6</div>
-                <div className="ws-note">(A~G 트랙 진행 / 접수 제외)</div>
+                <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
             </tr>
 
@@ -390,7 +397,6 @@ export function TimetableGrid({
               {/* Wed: Fellowship */}
               <td className="cell-static">
                 <div className="static-title text-amber-300">FELLOWSHIP NIGHT</div>
-                <div className="static-sub">교제의 밤</div>
               </td>
               {/* Thu: National Reports (Cambodia & Myanmar) */}
               <td className="cell-target cell-target-evening">
