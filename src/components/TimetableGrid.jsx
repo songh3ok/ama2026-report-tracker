@@ -429,7 +429,7 @@ export function TimetableGrid({
                   {renderSpeakerBox("national-4")}
                 </div>
                 <div className="evening-sub-block mt-2">
-                  <div className="static-sub-mini">PRAYER & EVENING MESSAGES: Rev. Yohannes Nahuway</div>
+                  <div className="static-sub-mini">MESSAGES: Rev. Dr. Daniel Shinjong Baeq</div>
                 </div>
               </td>
             </tr>
