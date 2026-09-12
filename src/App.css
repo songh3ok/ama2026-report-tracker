@@ -974,6 +974,13 @@
   background: var(--surface-2);
 }
 
+/* 9:30–9:40 and 2:10–2:30: thin shaded box, same tone as break rows */
+.tt-row-gap td {
+  height: 12px;
+  padding: 0 !important;
+  background: var(--surface-2);
+}
+
 .cell-muted {
   background-image: repeating-linear-gradient(
     135deg,

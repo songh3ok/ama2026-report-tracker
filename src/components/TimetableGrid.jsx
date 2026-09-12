@@ -65,7 +65,7 @@ export function TimetableGrid({
           <tr>
             <td className="cell-time">AM 8:30–8:50</td>
             <td className="cell-min">20</td>
-            <td className="cell-muted" rowSpan={6} />
+            <td className="cell-muted" rowSpan={2} />
             <td colSpan={4} className="cell-static">Praise &amp; Worship</td>
           </tr>
 
@@ -88,10 +88,16 @@ export function TimetableGrid({
             <td className="cell-static">Praise &amp; Worship</td>
           </tr>
 
+          {/* 9:30-9:40 break: thin shaded divider, no times */}
+          <tr className="tt-row-gap" aria-hidden="true">
+            <td colSpan={7} />
+          </tr>
+
           {/* AM 9:40-10:30: Plenary Sessions 1 */}
           <tr>
             <td className="cell-time is-key">9:40–10:30</td>
             <td className="cell-min">50</td>
+            <td className="cell-muted" rowSpan={4} />
             <td className="cell-target">
               <SessionHead cat="plenary" kicker="Plenary" title="AI" />
               {renderPair('plenary-1-speaker', 'plenary-1-respondent')}
@@ -175,6 +181,11 @@ export function TimetableGrid({
             <td className="cell-target">{renderSpeakerBox('global-2')}</td>
             <td className="cell-target">{renderSpeakerBox('global-4')}</td>
             <td className="cell-target">{renderSpeakerBox('global-6')}</td>
+          </tr>
+
+          {/* 2:10-2:30 break: thin shaded divider, no times */}
+          <tr className="tt-row-gap" aria-hidden="true">
+            <td colSpan={7} />
           </tr>
 
           {/* 2:30-3:20 Workshops */}
