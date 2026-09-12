@@ -125,11 +125,8 @@ export function TimetableGrid({
             <tr className="tt-row-common">
               <td className="cell-time">AM 8:30-8:50</td>
               <td className="cell-min">20</td>
-              <td className="cell-empty" rowSpan={6}>
-                <div className="empty-notice">
-                  <strong>REGISTRATION & ARRIVAL</strong>
-                  <span>(Day 1 Official Program starts at 17:00)</span>
-                </div>
+              <td className="cell-muted" rowSpan={6}>
+                <div className="static-sub">-</div>
               </td>
               <td colSpan={4} className="cell-static">
                 PRAISE & WORSHIP
@@ -353,7 +350,13 @@ export function TimetableGrid({
             <tr className="tt-row-break">
               <td className="cell-time">3:20-3:40</td>
               <td className="cell-min">20</td>
-              <td className="cell-muted">-</td>
+              {/* Day 1 (Mon): REGISTRATION (3:20 - 5:00 PM) */}
+              <td className="cell-registration-block" rowSpan={3}>
+                <div className="registration-content">
+                  <div className="registration-main-title">REGISTRATION</div>
+                  <div className="registration-sub-time">3:20 – 5:00 PM</div>
+                </div>
+              </td>
               <td colSpan={3} className="cell-static text-coffee">
                 COFFEE BREAK
               </td>
@@ -363,7 +366,7 @@ export function TimetableGrid({
             <tr className="tt-row-workshops">
               <td className="cell-time">3:40-4:30</td>
               <td className="cell-min">50</td>
-              <td className="cell-muted">-</td>
+              {/* Mon covered by rowSpan={3} */}
               <td className="cell-workshop-notice">
                 <div className="ws-title">WORKSHOPS-2</div>
                 <div className="ws-note">(Tracks A~G / Excluded)</div>
@@ -382,7 +385,7 @@ export function TimetableGrid({
             <tr className="tt-row-break">
               <td className="cell-time">4:30-5:00</td>
               <td className="cell-min">30</td>
-              <td className="cell-muted">-</td>
+              {/* Mon covered by rowSpan={3} */}
               <td colSpan={3} className="cell-static">
                 BREAK
               </td>
@@ -392,8 +395,7 @@ export function TimetableGrid({
             <tr className="tt-row-break">
               <td className="cell-time">5:00-6:30</td>
               <td className="cell-min">90</td>
-              <td className="cell-static text-dinner">DINNER</td>
-              <td colSpan={3} className="cell-static text-dinner">
+              <td colSpan={4} className="cell-static text-dinner">
                 DINNER
               </td>
             </tr>
