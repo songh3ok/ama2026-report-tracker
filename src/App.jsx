@@ -86,6 +86,12 @@ export function App() {
     if (!target) return;
 
     if (target.status === 'submitted') {
+      // Undo (↺) wipes the recorded platform/formats, so always ask first
+      const confirmed = window.confirm(
+        `정말 되돌릴까요?\n\n${target.speakerName}의 제출 기록과 입력한 컴퓨터·파일 정보가 지워지고 '미제출' 상태가 됩니다.\n\nRevert ${target.speakerName} to Not Received?`
+      );
+      if (!confirmed) return;
+
       setSpeakers(prev => prev.map(item => {
         if (item.id === id) {
           return {
