@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Clock, Play, Edit2 } from 'lucide-react';
+import { CheckCircle2, Clock, Play } from 'lucide-react';
 
 export function TimetableGrid({ 
   speakersMap, 
@@ -20,7 +20,7 @@ export function TimetableGrid({
         key={speaker.id}
         className={`tt-speaker-item ${isSubmitted ? 'is-submitted' : 'is-pending'} ${isDimmed ? 'dimmed' : ''}`}
         onClick={() => onOpenEdit(speaker)}
-        title={isSubmitted ? "Click anywhere to view/edit submission" : "Click anywhere on this card to start questionnaire and submit"}
+        title={isSubmitted ? "Click to view/edit submission" : "Click anywhere to start questionnaire and submit"}
       >
         <div className="tt-speaker-header">
           <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
@@ -28,22 +28,22 @@ export function TimetableGrid({
           </span>
           
           <div className="tt-status-and-action">
-            {/* Status indicator: Pending (Red) or Submitted (Green) */}
+            {/* Status indicator moved to upper line: Not received yet vs Submitted */}
             <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
               {isSubmitted ? (
                 <>
-                  <CheckCircle2 size={11} />
+                  <CheckCircle2 size={10} />
                   <span>Submitted</span>
                 </>
               ) : (
                 <>
-                  <Clock size={11} />
-                  <span>Pending</span>
+                  <Clock size={10} />
+                  <span>Not received yet</span>
                 </>
               )}
             </span>
 
-            {/* Action button: "Start" when pending (opens animated questionnaire popup), "Undo" when submitted */}
+            {/* Action button: "Start" when pending, "Undo" when submitted */}
             {isSubmitted ? (
               <button 
                 className="tt-action-btn btn-undo"
@@ -64,7 +64,7 @@ export function TimetableGrid({
                 }}
                 title="Click to start questionnaire and submit"
               >
-                <Play size={10} fill="currentColor" />
+                <Play size={9} fill="currentColor" />
                 <span>Start</span>
               </button>
             )}
@@ -81,8 +81,8 @@ export function TimetableGrid({
           </div>
         )}
 
-        {/* Platform OS and File Types Display */}
-        {(speaker.computerOS || (speaker.fileTypes && speaker.fileTypes.length > 0)) && (
+        {/* Platform OS, File Types & Timestamp (When submitted) */}
+        {isSubmitted && (
           <div className="tt-meta-badge-row">
             {speaker.computerOS && (
               <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
@@ -94,33 +94,13 @@ export function TimetableGrid({
                 {ft}
               </span>
             ))}
+            {speaker.submittedAt && (
+              <span className="tt-timestamp-pill">
+                ✓ {speaker.submittedAt}
+              </span>
+            )}
           </div>
         )}
-
-        {/* Date & Time Record */}
-        <div className="tt-timestamp-row">
-          {isSubmitted ? (
-            <span className="timestamp-submitted text-emerald-400">
-              ✓ {speaker.submittedAt || 'Received'}
-            </span>
-          ) : (
-            <span className="timestamp-pending text-rose-400">
-              Not received yet
-            </span>
-          )}
-          <div className="tt-mini-actions">
-            <button 
-              className="tt-edit-mini-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenEdit(speaker);
-              }}
-              title="Edit OS & file formats"
-            >
-              <Edit2 size={11} />
-            </button>
-          </div>
-        </div>
       </div>
     );
   };

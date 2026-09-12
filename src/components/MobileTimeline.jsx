@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Clock, Play, ExternalLink, Edit2, Calendar } from 'lucide-react';
+import { CheckCircle2, Clock, Play, Calendar } from 'lucide-react';
 
 export function MobileTimeline({ 
   speakersMap, 
@@ -226,17 +226,17 @@ export function MobileTimeline({
                               </span>
                               
                               <div className="mobile-status-and-action">
-                                {/* Status badge */}
+                                {/* Status badge: Not received yet vs Submitted */}
                                 <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
                                   {isSubmitted ? (
                                     <>
-                                      <CheckCircle2 size={11} />
+                                      <CheckCircle2 size={10} />
                                       <span>Submitted</span>
                                     </>
                                   ) : (
                                     <>
-                                      <Clock size={11} />
-                                      <span>Pending</span>
+                                      <Clock size={10} />
+                                      <span>Not received yet</span>
                                     </>
                                   )}
                                 </span>
@@ -275,8 +275,8 @@ export function MobileTimeline({
                               {speaker.affiliationOrCountry}
                             </div>
 
-                            {/* Platform OS and File Types Display */}
-                            {(speaker.computerOS || (speaker.fileTypes && speaker.fileTypes.length > 0)) && (
+                            {/* Platform OS, File Types & Timestamp (When submitted) */}
+                            {isSubmitted && (
                               <div className="mobile-meta-badges">
                                 {speaker.computerOS && (
                                   <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
@@ -288,35 +288,13 @@ export function MobileTimeline({
                                     {ft}
                                   </span>
                                 ))}
-                              </div>
-                            )}
-
-                            <div className="mobile-card-footer">
-                              <div className="mobile-time-record">
-                                {isSubmitted ? (
-                                  <span className="text-emerald-400 font-medium">
-                                    ✓ Received: {speaker.submittedAt || 'Done'}
-                                  </span>
-                                ) : (
-                                  <span className="text-rose-400 font-medium">
-                                    🔴 Material not received yet
+                                {speaker.submittedAt && (
+                                  <span className="tt-timestamp-pill">
+                                    ✓ {speaker.submittedAt}
                                   </span>
                                 )}
                               </div>
-
-                              <div className="mobile-card-actions">
-                                <button 
-                                  className="mobile-edit-badge"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onOpenEdit(speaker);
-                                  }}
-                                >
-                                  <Edit2 size={12} />
-                                  Format & Details
-                                </button>
-                              </div>
-                            </div>
+                            )}
                           </div>
                         );
                       })}
