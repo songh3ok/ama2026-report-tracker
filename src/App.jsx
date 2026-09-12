@@ -79,35 +79,37 @@ export function App() {
     return map;
   }, [speakers]);
 
-  // 1-click status toggle directly from timetable: Submit <-> Pending
+  // Handle status actions: Undo reverts to pending; pending triggers questionnaire modal
   const handleToggleStatus = (id) => {
-    setSpeakers(prev => prev.map(item => {
-      if (item.id === id) {
-        const isNowSubmitted = item.status !== 'submitted';
-        const now = new Date();
-        const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        
-        const newStatus = isNowSubmitted ? 'submitted' : 'pending';
-        showToast(
-          isNowSubmitted 
-            ? `✓ ${item.speakerName} marked as Submitted (${formatted})` 
-            : `ℹ ${item.speakerName} reverted to Pending.`
-        );
+    const target = speakers.find(s => s.id === id);
+    if (!target) return;
 
-        return {
-          ...item,
-          status: newStatus,
-          submittedAt: isNowSubmitted ? (item.submittedAt || formatted) : ''
-        };
-      }
-      return item;
-    }));
+    if (target.status === 'submitted') {
+      setSpeakers(prev => prev.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            status: 'pending',
+            submittedAt: '',
+            computerOS: '',
+            fileTypes: []
+          };
+        }
+        return item;
+      }));
+      showToast(`ℹ ${target.speakerName} reverted to Pending.`);
+    } else {
+      // Opening modal for mandatory questions before submitting
+      setSelectedSpeaker(target);
+    }
   };
 
   // Save changes from modal
   const handleSaveModal = (id, formData) => {
     setSpeakers(prev => prev.map(s => (s.id === id ? { ...s, ...formData } : s)));
-    showToast('Changes saved.');
+    const target = speakers.find(s => s.id === id);
+    const name = target ? target.speakerName : 'Session';
+    showToast(`✓ ${name} Submitted (${formData.computerOS} · ${(formData.fileTypes || []).join(', ')})`);
   };
 
   // Export CSV

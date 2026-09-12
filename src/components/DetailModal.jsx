@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, CheckCircle2, Clock, Laptop, FileCheck, Check } from 'lucide-react';
+import { X, CheckCircle2, Clock, Laptop, FileCheck, Check, AlertCircle, Sparkles } from 'lucide-react';
 
 const OS_OPTIONS = ['Windows', 'Mac'];
 const FILE_TYPE_OPTIONS = ['PPT', 'Keynote', 'PDF', 'DOCX', 'Image', 'MP4', 'MP3', 'Other'];
@@ -7,118 +7,131 @@ const FILE_TYPE_OPTIONS = ['PPT', 'Keynote', 'PDF', 'DOCX', 'Image', 'MP4', 'MP3
 export function DetailModal({ speaker, isOpen, onClose, onSave }) {
   if (!isOpen || !speaker) return null;
 
-  const [formData, setFormData] = useState({
-    status: 'pending',
-    computerOS: '',
-    fileTypes: [],
-    submittedAt: '',
-    notes: ''
-  });
+  const [computerOS, setComputerOS] = useState('');
+  const [fileTypes, setFileTypes] = useState([]);
+  const [notes, setNotes] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+
+  const isAlreadySubmitted = speaker.status === 'submitted';
 
   useEffect(() => {
     if (speaker) {
-      setFormData({
-        status: speaker.status || 'pending',
-        computerOS: speaker.computerOS || '',
-        fileTypes: Array.isArray(speaker.fileTypes) ? speaker.fileTypes : [],
-        submittedAt: speaker.submittedAt || '',
-        notes: speaker.notes || ''
-      });
+      setComputerOS(speaker.computerOS || '');
+      setFileTypes(Array.isArray(speaker.fileTypes) ? speaker.fileTypes : []);
+      setNotes(speaker.notes || '');
+      setErrorMessage('');
+      setAttemptedSubmit(false);
     }
   }, [speaker]);
 
-  const handleToggleStatus = () => {
-    const isNowSubmitted = formData.status !== 'submitted';
-    const now = new Date();
-    const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
-    setFormData(prev => ({
-      ...prev,
-      status: isNowSubmitted ? 'submitted' : 'pending',
-      submittedAt: isNowSubmitted ? (prev.submittedAt || formatted) : ''
-    }));
-  };
-
   const handleToggleOS = (os) => {
-    setFormData(prev => ({
-      ...prev,
-      computerOS: prev.computerOS === os ? '' : os
-    }));
+    setComputerOS(prev => prev === os ? '' : os);
+    setErrorMessage('');
   };
 
   const handleToggleFileType = (type) => {
-    setFormData(prev => {
-      const exists = prev.fileTypes.includes(type);
-      const updated = exists 
-        ? prev.fileTypes.filter(t => t !== type)
-        : [...prev.fileTypes, type];
-      return { ...prev, fileTypes: updated };
+    setFileTypes(prev => {
+      const exists = prev.includes(type);
+      return exists ? prev.filter(t => t !== type) : [...prev, type];
     });
+    setErrorMessage('');
   };
 
+  // Submit action: enforces mandatory inputs
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(speaker.id, formData);
+    setAttemptedSubmit(true);
+
+    // Validation: Computer OS is required
+    if (!computerOS) {
+      setErrorMessage('Required: Please select the Computer Platform (Windows or Mac).');
+      return;
+    }
+
+    // Validation: At least one File Type is required
+    if (fileTypes.length === 0) {
+      setErrorMessage('Required: Please select at least one Material Format (PPT, PDF, etc.).');
+      return;
+    }
+
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    onSave(speaker.id, {
+      status: 'submitted',
+      computerOS,
+      fileTypes,
+      submittedAt: speaker.submittedAt || formattedDate,
+      notes
+    });
+
     onClose();
+  };
+
+  // Option to revert to Pending
+  const handleRevertToPending = () => {
+    if (window.confirm('Revert this speaker to Pending status?')) {
+      onSave(speaker.id, {
+        status: 'pending',
+        computerOS: '',
+        fileTypes: [],
+        submittedAt: '',
+        notes: ''
+      });
+      onClose();
+    }
   };
 
   return (
     <div className="modal-overlay animate-fade-in" onClick={onClose}>
-      <div className="modal-container glass-panel modal-compact" onClick={(e) => e.stopPropagation()}>
+      <div 
+        className="modal-container glass-panel modal-motion-popup" 
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <div>
+            <div className="modal-badge-row">
+              <span className="modal-role-pill">{speaker.role}</span>
+              <span className="modal-day-badge">{speaker.dateLabel} {speaker.time}</span>
+              <span className="modal-intake-badge">
+                <Sparkles size={11} className="text-amber-400" />
+                <span>Intake Questionnaire</span>
+              </span>
+            </div>
             <h2 className="modal-title">{speaker.speakerName}</h2>
             <p className="modal-subtitle">
-              {speaker.sessionTitle} · {speaker.dateLabel} {speaker.time}
+              {speaker.sessionTitle} · {speaker.affiliationOrCountry}
             </p>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
+          <button className="modal-close-btn" onClick={onClose} title="Close">
             <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-form">
-          {/* Quick Status Bar */}
-          <div className="status-toggle-box">
-            <span className="status-toggle-label">Status:</span>
-            <div className="status-toggle-right">
-              <span className={`tt-status-tag ${formData.status === 'submitted' ? 'tag-submitted' : 'tag-pending'}`}>
-                {formData.status === 'submitted' ? 'Submitted' : 'Pending'}
-              </span>
-              <button
-                type="button"
-                className={`modal-action-btn ${formData.status === 'submitted' ? 'btn-undo' : 'btn-submit'}`}
-                onClick={handleToggleStatus}
-              >
-                {formData.status === 'submitted' ? 'Undo Submission' : 'Submit'}
-              </button>
+          {/* Validation Notice */}
+          {errorMessage && (
+            <div className="modal-error-banner animate-shake">
+              <AlertCircle size={16} />
+              <span>{errorMessage}</span>
             </div>
-          </div>
+          )}
 
-          {/* Submission Timestamp */}
-          <div className="form-group">
-            <label className="form-label">
-              <Clock size={14} />
-              <span>Received Timestamp</span>
-            </label>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="e.g. 2026-09-12 14:30 (Auto-recorded on submit)"
-              value={formData.submittedAt}
-              onChange={(e) => setFormData({ ...formData, submittedAt: e.target.value })}
-            />
-          </div>
-
-          {/* Computer Platform (Windows / Mac) */}
-          <div className="form-group">
-            <label className="form-label">
-              <Laptop size={14} />
-              <span>Computer Platform</span>
-            </label>
+          {/* Step 1: Computer Platform (MANDATORY) */}
+          <div className={`form-question-card ${attemptedSubmit && !computerOS ? 'is-invalid animate-shake' : ''}`}>
+            <div className="question-header">
+              <span className="question-step">Step 1</span>
+              <div className="question-title-wrap">
+                <Laptop size={16} className="text-blue-400" />
+                <span className="question-title">Computer Platform</span>
+                <span className="required-tag">Mandatory</span>
+              </div>
+            </div>
+            <p className="question-hint">Which OS will be used for this presentation?</p>
             <div className="os-selector-grid">
               {OS_OPTIONS.map(os => {
-                const isSelected = formData.computerOS === os;
+                const isSelected = computerOS === os;
                 return (
                   <button
                     key={os}
@@ -126,7 +139,7 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
                     className={`os-btn ${isSelected ? 'selected' : ''}`}
                     onClick={() => handleToggleOS(os)}
                   >
-                    {isSelected && <Check size={14} className="text-blue-400" />}
+                    {isSelected && <Check size={16} className="text-blue-400 font-bold" />}
                     <span>{os}</span>
                   </button>
                 );
@@ -134,15 +147,20 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
             </div>
           </div>
 
-          {/* File Types (PPT, Keynote, PDF, DOCX, Image, MP4, MP3, Other) */}
-          <div className="form-group">
-            <label className="form-label">
-              <FileCheck size={14} />
-              <span>Material Format Type</span>
-            </label>
+          {/* Step 2: Material Format Type (MANDATORY) */}
+          <div className={`form-question-card ${attemptedSubmit && fileTypes.length === 0 ? 'is-invalid animate-shake' : ''}`}>
+            <div className="question-header">
+              <span className="question-step">Step 2</span>
+              <div className="question-title-wrap">
+                <FileCheck size={16} className="text-emerald-400" />
+                <span className="question-title">Material Format Type</span>
+                <span className="required-tag">Mandatory</span>
+              </div>
+            </div>
+            <p className="question-hint">Select all formats provided (one or more):</p>
             <div className="file-types-chips-grid">
               {FILE_TYPE_OPTIONS.map(type => {
-                const isSelected = formData.fileTypes.includes(type);
+                const isSelected = fileTypes.includes(type);
                 return (
                   <button
                     key={type}
@@ -150,7 +168,7 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
                     className={`file-type-chip ${isSelected ? 'selected' : ''}`}
                     onClick={() => handleToggleFileType(type)}
                   >
-                    {isSelected && <Check size={12} />}
+                    {isSelected && <Check size={13} />}
                     <span>{type}</span>
                   </button>
                 );
@@ -158,25 +176,35 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
             </div>
           </div>
 
-          {/* Notes */}
+          {/* Step 3: Optional Remarks */}
           <div className="form-group">
-            <label className="form-label">Notes / Remarks</label>
+            <label className="form-label">
+              <span>Remarks / Memo (Optional)</span>
+            </label>
             <input
               type="text"
               className="form-input"
-              placeholder="Additional details..."
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder="e.g. Video included, Needs clicker..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
             />
           </div>
 
-          <div className="modal-actions">
-            <button type="button" className="btn-secondary" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="btn-primary">
-              <Save size={16} />
-              <span>Save Changes</span>
+          {/* Action Row */}
+          <div className="modal-submit-actions">
+            {isAlreadySubmitted && (
+              <button 
+                type="button" 
+                className="btn-revert"
+                onClick={handleRevertToPending}
+              >
+                Revert to Pending
+              </button>
+            )}
+
+            <button type="submit" className="btn-final-submit">
+              <CheckCircle2 size={18} />
+              <span>{isAlreadySubmitted ? 'Update Submission' : 'Submit (제출)'}</span>
             </button>
           </div>
         </form>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Clock, ExternalLink, Edit2, Calendar } from 'lucide-react';
+import { CheckCircle2, Clock, Play, ExternalLink, Edit2, Calendar } from 'lucide-react';
 
 export function MobileTimeline({ 
   speakersMap, 
@@ -241,16 +241,29 @@ export function MobileTimeline({
                                   )}
                                 </span>
 
-                                {/* Action button: "Submit" when pending, "Undo" when submitted */}
-                                <button
-                                  className={`mobile-action-btn ${isSubmitted ? 'btn-undo' : 'btn-submit'}`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onToggleStatus(speaker.id);
-                                  }}
-                                >
-                                  {isSubmitted ? 'Undo' : 'Submit'}
-                                </button>
+                                {/* Action button: "Start" when pending, "Undo" when submitted */}
+                                {isSubmitted ? (
+                                  <button
+                                    className="mobile-action-btn btn-undo"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onToggleStatus(speaker.id);
+                                    }}
+                                  >
+                                    Undo
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="mobile-action-btn btn-start"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onOpenEdit(speaker);
+                                    }}
+                                  >
+                                    <Play size={10} fill="currentColor" />
+                                    <span>Start</span>
+                                  </button>
+                                )}
                               </div>
                             </div>
 

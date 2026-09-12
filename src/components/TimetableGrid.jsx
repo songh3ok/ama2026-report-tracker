@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Clock, ExternalLink, Edit2 } from 'lucide-react';
+import { CheckCircle2, Clock, Play, Edit2 } from 'lucide-react';
 
 export function TimetableGrid({ 
   speakersMap, 
@@ -41,17 +41,31 @@ export function TimetableGrid({
               )}
             </span>
 
-            {/* Action button: "Submit" when pending, "Undo" when submitted */}
-            <button 
-              className={`tt-action-btn ${isSubmitted ? 'btn-undo' : 'btn-submit'}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleStatus(speaker.id);
-              }}
-              title={isSubmitted ? 'Click to revert to Pending' : 'Click to mark as Submitted'}
-            >
-              {isSubmitted ? 'Undo' : 'Submit'}
-            </button>
+            {/* Action button: "Start" when pending (opens animated questionnaire popup), "Undo" when submitted */}
+            {isSubmitted ? (
+              <button 
+                className="tt-action-btn btn-undo"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleStatus(speaker.id);
+                }}
+                title="Click to revert to Pending"
+              >
+                Undo
+              </button>
+            ) : (
+              <button 
+                className="tt-action-btn btn-start"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenEdit(speaker);
+                }}
+                title="Click to start questionnaire and submit"
+              >
+                <Play size={10} fill="currentColor" />
+                <span>Start</span>
+              </button>
+            )}
           </div>
         </div>
 
