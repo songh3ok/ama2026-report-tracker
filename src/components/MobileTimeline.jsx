@@ -892,10 +892,6 @@ export function MobileTimeline({
                                   {speaker.speakerName}
                                 </div>
 
-                                <div className="mobile-speaker-affil">
-                                  {speaker.affiliationOrCountry}
-                                </div>
-
                                 {/* Platform OS, File Types & Timestamp (When submitted) */}
                                 {isSubmitted && (
                                   <div className="mobile-meta-badges">

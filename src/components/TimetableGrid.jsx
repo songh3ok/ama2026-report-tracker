@@ -75,12 +75,6 @@ export function TimetableGrid({
           {speaker.speakerName}
         </div>
 
-        {speaker.affiliationOrCountry && (
-          <div className="tt-affiliation">
-            {speaker.affiliationOrCountry}
-          </div>
-        )}
-
         {/* Platform OS, File Types & Timestamp (When submitted) */}
         {isSubmitted && (
           <div className="tt-meta-badge-row">
