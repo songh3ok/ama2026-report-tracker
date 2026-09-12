@@ -390,6 +390,21 @@
   border-color: var(--line-strong);
 }
 
+/* Submitted: whole card tinted translucent green */
+.spk.is-submitted {
+  background: var(--ok-card-bg);
+  border-color: var(--ok-card-line);
+}
+
+.spk.is-submitted:hover {
+  background: var(--ok-card-bg-hover);
+  border-color: var(--ok);
+}
+
+.spk.is-submitted .badge-done {
+  background: var(--ok-card-badge);
+}
+
 .spk.dimmed {
   opacity: 0.32;
 }

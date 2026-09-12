@@ -22,6 +22,10 @@
 
   --ok: #4ccf92;
   --ok-soft: rgba(76, 207, 146, 0.11);
+  --ok-card-bg: rgba(76, 207, 146, 0.10);
+  --ok-card-bg-hover: rgba(76, 207, 146, 0.16);
+  --ok-card-line: rgba(76, 207, 146, 0.38);
+  --ok-card-badge: rgba(76, 207, 146, 0.20);
   --warn: #e7b24e;
   --warn-soft: rgba(231, 178, 78, 0.11);
   --danger: #f07a7a;
@@ -68,6 +72,10 @@
 
   --ok: #148a5a;
   --ok-soft: rgba(20, 138, 90, 0.09);
+  --ok-card-bg: rgba(20, 138, 90, 0.08);
+  --ok-card-bg-hover: rgba(20, 138, 90, 0.13);
+  --ok-card-line: rgba(20, 138, 90, 0.34);
+  --ok-card-badge: rgba(20, 138, 90, 0.16);
   --warn: #b27a0c;
   --warn-soft: rgba(178, 122, 12, 0.1);
   --danger: #c43d3d;
