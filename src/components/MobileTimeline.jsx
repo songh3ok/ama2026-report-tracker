@@ -226,17 +226,17 @@ export function MobileTimeline({
                               </span>
                               
                               <div className="mobile-status-and-action">
-                                {/* Status badge: Not Received vs Submitted */}
+                                {/* Status badge: NOT RECEIVED vs SUBMITTED */}
                                 <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
                                   {isSubmitted ? (
                                     <>
-                                      <CheckCircle2 size={10} />
-                                      <span>Submitted</span>
+                                      <CheckCircle2 size={9} />
+                                      <span>SUBMITTED</span>
                                     </>
                                   ) : (
                                     <>
-                                      <Clock size={10} />
-                                      <span>Not Received</span>
+                                      <Clock size={9} />
+                                      <span>NOT RECEIVED</span>
                                     </>
                                   )}
                                 </span>
