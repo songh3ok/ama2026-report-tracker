@@ -131,11 +131,11 @@ export function TimetableGrid({
             <tr className="header-row">
               <th className="th-time">Time</th>
               <th className="th-min">Min</th>
-              <th className="th-day">Sep 14 (Mon)</th>
-              <th className="th-day">15 (Tue)</th>
-              <th className="th-day">16 (Wed)</th>
-              <th className="th-day">17 (Thu)</th>
-              <th className="th-day">18 (Fri)</th>
+              <th className="th-day">Sep 14 (Mon) · Day 1</th>
+              <th className="th-day">15 (Tue) · Day 2</th>
+              <th className="th-day">16 (Wed) · Day 3</th>
+              <th className="th-day">17 (Thu) · Day 4</th>
+              <th className="th-day">18 (Fri) · Day 5</th>
             </tr>
           </thead>
           <tbody>
@@ -143,9 +143,10 @@ export function TimetableGrid({
             <tr className="tt-row-common">
               <td className="cell-time">AM 8:30-8:50</td>
               <td className="cell-min">20</td>
-              <td className="cell-muted" rowSpan={6}>
-                <div className="cell-static-content">
-                  <div className="static-title">REGISTRATION</div>
+              <td className="cell-empty" rowSpan={6}>
+                <div className="empty-notice">
+                  <strong>REGISTRATION & ARRIVAL</strong>
+                  <span>(Day 1 Official Program starts at 17:00)</span>
                 </div>
               </td>
               <td colSpan={4} className="cell-static">
@@ -157,27 +158,27 @@ export function TimetableGrid({
             <tr className="tt-row-target-highlight">
               <td className="cell-time highlight-time">8:50-9:30</td>
               <td className="cell-min">40</td>
-              {/* Tue: Day 1 */}
+              {/* Tue: Day 2 */}
               <td className="cell-target">
                 <div className="tt-biblical-header">
-                  <span className="biblical-sub-tag">MORNING SESSION</span>
-                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 1)</h4>
+                  <span className="biblical-sub-tag">MORNING SESSION · DAY 2</span>
+                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 2)</h4>
                 </div>
                 {renderSpeakerBox("biblical-15")}
               </td>
-              {/* Wed: Day 2 */}
+              {/* Wed: Day 3 */}
               <td className="cell-target">
                 <div className="tt-biblical-header">
-                  <span className="biblical-sub-tag">MORNING SESSION</span>
-                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 2)</h4>
+                  <span className="biblical-sub-tag">MORNING SESSION · DAY 3</span>
+                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 3)</h4>
                 </div>
                 {renderSpeakerBox("biblical-16")}
               </td>
-              {/* Thu: Day 3 */}
+              {/* Thu: Day 4 */}
               <td className="cell-target">
                 <div className="tt-biblical-header">
-                  <span className="biblical-sub-tag">MORNING SESSION</span>
-                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 3)</h4>
+                  <span className="biblical-sub-tag">MORNING SESSION · DAY 4</span>
+                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 4)</h4>
                 </div>
                 {renderSpeakerBox("biblical-17")}
               </td>

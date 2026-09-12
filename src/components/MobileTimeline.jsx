@@ -11,22 +11,22 @@ export function MobileTimeline({
 
   const DAYS = [
     { key: 'all', label: 'All Days' },
-    { key: '2026-09-15', label: 'Sep 15 (Tue)' },
-    { key: '2026-09-16', label: 'Sep 16 (Wed)' },
-    { key: '2026-09-17', label: 'Sep 17 (Thu)' },
-    { key: '2026-09-18', label: 'Sep 18 (Fri)' }
+    { key: '2026-09-15', label: 'Sep 15 (Tue) · Day 2' },
+    { key: '2026-09-16', label: 'Sep 16 (Wed) · Day 3' },
+    { key: '2026-09-17', label: 'Sep 17 (Thu) · Day 4' },
+    { key: '2026-09-18', label: 'Sep 18 (Fri) · Day 5' }
   ];
 
   // Grouped sessions by day including Biblical Exegesis
   const timelineSchedule = [
     {
       date: '2026-09-15',
-      dateLabel: 'Sep 15 (Tue)',
+      dateLabel: 'Sep 15 (Tue) · Day 2',
       sessions: [
         {
           time: '08:50 - 09:30',
           category: 'biblical',
-          title: 'BIBLICAL EXEGESIS (DAY 1)',
+          title: 'BIBLICAL EXEGESIS (DAY 2)',
           speakerIds: ['biblical-15']
         },
         {
@@ -63,12 +63,12 @@ export function MobileTimeline({
     },
     {
       date: '2026-09-16',
-      dateLabel: 'Sep 16 (Wed)',
+      dateLabel: 'Sep 16 (Wed) · Day 3',
       sessions: [
         {
           time: '08:50 - 09:30',
           category: 'biblical',
-          title: 'BIBLICAL EXEGESIS (DAY 2)',
+          title: 'BIBLICAL EXEGESIS (DAY 3)',
           speakerIds: ['biblical-16']
         },
         {
@@ -99,12 +99,12 @@ export function MobileTimeline({
     },
     {
       date: '2026-09-17',
-      dateLabel: 'Sep 17 (Thu)',
+      dateLabel: 'Sep 17 (Thu) · Day 4',
       sessions: [
         {
           time: '08:50 - 09:30',
           category: 'biblical',
-          title: 'BIBLICAL EXEGESIS (DAY 3)',
+          title: 'BIBLICAL EXEGESIS (DAY 4)',
           speakerIds: ['biblical-17']
         },
         {
@@ -141,7 +141,7 @@ export function MobileTimeline({
     },
     {
       date: '2026-09-18',
-      dateLabel: 'Sep 18 (Fri)',
+      dateLabel: 'Sep 18 (Fri) · Day 5',
       sessions: [
         {
           time: '09:40 - 10:30',

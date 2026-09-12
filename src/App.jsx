@@ -33,7 +33,18 @@ export function App() {
         if (Array.isArray(parsed) && parsed.length > 0) {
           const savedMap = {};
           parsed.forEach(p => { savedMap[p.id] = p; });
-          return INITIAL_SPEAKERS.map(item => savedMap[item.id] || item);
+          return INITIAL_SPEAKERS.map(item => {
+            const savedItem = savedMap[item.id];
+            if (!savedItem) return item;
+            return {
+              ...item,
+              status: savedItem.status || 'pending',
+              submittedAt: savedItem.submittedAt || null,
+              computerOS: savedItem.computerOS || '',
+              fileTypes: savedItem.fileTypes || [],
+              notes: savedItem.notes || ''
+            };
+          });
         }
       }
     } catch (e) {
