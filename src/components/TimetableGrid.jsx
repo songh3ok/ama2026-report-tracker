@@ -141,22 +141,25 @@ export function TimetableGrid({
               <td className="cell-min">40</td>
               {/* Tue: Day 1 */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-biblical">
-                  BIBLICAL EXEGESIS (DAY 1)
+                <div className="tt-biblical-header">
+                  <span className="biblical-sub-tag">MORNING SESSION</span>
+                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 1)</h4>
                 </div>
                 {renderSpeakerBox("biblical-15")}
               </td>
               {/* Wed: Day 2 */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-biblical">
-                  BIBLICAL EXEGESIS (DAY 2)
+                <div className="tt-biblical-header">
+                  <span className="biblical-sub-tag">MORNING SESSION</span>
+                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 2)</h4>
                 </div>
                 {renderSpeakerBox("biblical-16")}
               </td>
               {/* Thu: Day 3 */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-biblical">
-                  BIBLICAL EXEGESIS (DAY 3)
+                <div className="tt-biblical-header">
+                  <span className="biblical-sub-tag">MORNING SESSION</span>
+                  <h4 className="biblical-main-topic">BIBLICAL EXEGESIS (DAY 3)</h4>
                 </div>
                 {renderSpeakerBox("biblical-17")}
               </td>
