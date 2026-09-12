@@ -343,7 +343,7 @@ export function TimetableGrid({
                 <div className="ws-title">WORKSHOPS-5</div>
                 <div className="ws-note">(Tracks A~G / Excluded)</div>
               </td>
-              <td className="cell-muted" rowSpan={6}>-</td>
+              <td className="cell-muted" rowSpan={11}>-</td>
             </tr>
 
             {/* 3:20-3:40 COFFEE BREAK */}
@@ -408,18 +408,13 @@ export function TimetableGrid({
             <tr className="tt-row-evening">
               <td className="cell-time highlight-time">6:30-7:00</td>
               <td className="cell-min">30</td>
-              {/* Mon: Welcome Reception (spans all 6 evening rows) */}
-              <td className="cell-static" rowSpan={6}>
-                <div className="static-title">WELCOME RECEPTION</div>
-                <div className="static-sub">Rev. Jaehoon Lee</div>
-              </td>
-              {/* Tue: Praise & Worship */}
-              <td className="cell-static">
+              {/* Mon & Tue: Praise & Worship */}
+              <td colSpan={2} className="cell-static">
                 PRAISE & WORSHIP
               </td>
-              {/* Wed: Fellowship Night (spans all 6 evening rows) */}
+              {/* Wed: Fellowship (spans all 6 evening rows) */}
               <td className="cell-static" rowSpan={6}>
-                <div className="static-title text-amber-300">FELLOWSHIP NIGHT</div>
+                <div className="static-title text-amber-300 font-bold">FELLOWSHIP</div>
               </td>
               {/* Thu: Praise & Worship */}
               <td className="cell-static">
@@ -431,8 +426,8 @@ export function TimetableGrid({
             <tr className="tt-row-evening">
               <td className="cell-time highlight-time">7:00-7:20</td>
               <td className="cell-min">20</td>
-              {/* Tue: Special Performances */}
-              <td className="cell-static">
+              {/* Mon & Tue: Special Performances */}
+              <td colSpan={2} className="cell-static">
                 SPECIAL PERFORMANCES
               </td>
               {/* Thu: Special Performances */}
@@ -441,10 +436,14 @@ export function TimetableGrid({
               </td>
             </tr>
 
-            {/* 3. 7:20-7:35 (15m): National Reports 1 (Uzbekistan / Cambodia) */}
+            {/* 3. 7:20-7:35 (15m): National Reports 1 (Uzbekistan / Cambodia) / Mon: Welcome Reception */}
             <tr className="tt-row-target-highlight">
               <td className="cell-time highlight-time">7:20-7:35</td>
               <td className="cell-min">15</td>
+              {/* Mon: Welcome Reception (spans 7:20 - 8:00, 3 rows) */}
+              <td className="cell-static" rowSpan={3} style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                <div className="static-title font-bold text-sky-200">WELCOME RECEPTION</div>
+              </td>
               {/* Tue: Uzbekistan */}
               <td className="cell-target cell-target-evening">
                 <div className="tt-national-header">
@@ -467,6 +466,7 @@ export function TimetableGrid({
             <tr className="tt-row-target-highlight">
               <td className="cell-time highlight-time">7:35-7:50</td>
               <td className="cell-min">15</td>
+              {/* Mon covered by rowSpan={3} */}
               {/* Tue: Mongolia */}
               <td className="cell-target cell-target-evening">
                 <div className="tt-national-header">
@@ -489,6 +489,7 @@ export function TimetableGrid({
             <tr className="tt-row-evening">
               <td className="cell-time highlight-time">7:50-8:00</td>
               <td className="cell-min">10</td>
+              {/* Mon covered by rowSpan={3} */}
               {/* Tue: Prayer */}
               <td className="cell-static">
                 PRAYER
@@ -503,15 +504,20 @@ export function TimetableGrid({
             <tr className="tt-row-evening">
               <td className="cell-time highlight-time">8:00-8:50</td>
               <td className="cell-min">50</td>
+              {/* Mon: Rev. Jaehoon Lee */}
+              <td className="cell-static">
+                <div className="static-title">EVENING MESSAGES</div>
+                <div className="static-sub font-semibold text-sky-300">Rev. Jaehoon Lee</div>
+              </td>
               {/* Tue: Rev. Jongboo Hwa */}
               <td className="cell-static">
                 <div className="static-title">EVENING MESSAGES</div>
                 <div className="static-sub font-semibold text-sky-300">Rev. Jongboo Hwa</div>
               </td>
-              {/* Thu: Rev. Dr. Daniel Shinjong Baeq */}
+              {/* Thu: Rev. Yohannes Nahuway */}
               <td className="cell-static">
-                <div className="static-title">MESSAGES</div>
-                <div className="static-sub font-semibold text-sky-300">Rev. Dr. Daniel Shinjong Baeq</div>
+                <div className="static-title">EVENING MESSAGES</div>
+                <div className="static-sub font-semibold text-sky-300">Rev. Yohannes Nahuway</div>
               </td>
             </tr>
           </tbody>
