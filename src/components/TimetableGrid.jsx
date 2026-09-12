@@ -398,52 +398,118 @@ export function TimetableGrid({
               </td>
             </tr>
 
-            {/* 6:30-8:50 EVENING SESSIONS & NATIONAL REPORTS */}
+            {/* ============================================================ */}
+            {/* EVENING SESSIONS: SPLIT INTO 6 DISTINCT SUB-ROWS              */}
+            {/* ============================================================ */}
+
+            {/* 1. 6:30-7:00 (30m): Praise & Worship */}
             <tr className="tt-row-evening">
-              <td className="cell-time highlight-time">6:30-8:50</td>
-              <td className="cell-min">140</td>
-              {/* Mon: Welcome Reception */}
-              <td className="cell-static">
+              <td className="cell-time highlight-time">6:30-7:00</td>
+              <td className="cell-min">30</td>
+              {/* Mon: Welcome Reception (spans all 6 evening rows) */}
+              <td className="cell-static" rowSpan={6}>
                 <div className="static-title">WELCOME RECEPTION</div>
                 <div className="static-sub">Rev. Jaehoon Lee</div>
               </td>
-              {/* Tue: National Reports (Uzbekistan & Mongolia) */}
-              <td className="cell-target cell-target-evening">
-                <div className="evening-sub-block">
-                  <div className="static-sub-mini">PRAISE & WORSHIP / SPECIAL PERFORMANCES</div>
-                </div>
-                <div className="tt-national-header">
-                  <span className="national-sub-tag">EVENING SESSION</span>
-                  <h4 className="national-main-topic">NATIONAL REPORTS</h4>
-                </div>
-                <div className="tt-speakers-pair">
-                  {renderSpeakerBox("national-1")}
-                  {renderSpeakerBox("national-2")}
-                </div>
-                <div className="evening-sub-block mt-2">
-                  <div className="static-sub-mini">EVENING MESSAGES: Rev. Jongboo Hwa</div>
-                </div>
-              </td>
-              {/* Wed: Fellowship */}
+              {/* Tue: Praise & Worship */}
               <td className="cell-static">
+                PRAISE & WORSHIP
+              </td>
+              {/* Wed: Fellowship Night (spans all 6 evening rows) */}
+              <td className="cell-static" rowSpan={6}>
                 <div className="static-title text-amber-300">FELLOWSHIP NIGHT</div>
               </td>
-              {/* Thu: National Reports (Cambodia & Myanmar) */}
+              {/* Thu: Praise & Worship */}
+              <td className="cell-static">
+                PRAISE & WORSHIP
+              </td>
+            </tr>
+
+            {/* 2. 7:00-7:20 (20m): Special Performances */}
+            <tr className="tt-row-evening">
+              <td className="cell-time highlight-time">7:00-7:20</td>
+              <td className="cell-min">20</td>
+              {/* Tue: Special Performances */}
+              <td className="cell-static">
+                SPECIAL PERFORMANCES
+              </td>
+              {/* Thu: Special Performances */}
+              <td className="cell-static">
+                SPECIAL PERFORMANCES
+              </td>
+            </tr>
+
+            {/* 3. 7:20-7:35 (15m): National Reports 1 (Uzbekistan / Cambodia) */}
+            <tr className="tt-row-target-highlight">
+              <td className="cell-time highlight-time">7:20-7:35</td>
+              <td className="cell-min">15</td>
+              {/* Tue: Uzbekistan */}
               <td className="cell-target cell-target-evening">
-                <div className="evening-sub-block">
-                  <div className="static-sub-mini">PRAISE & WORSHIP / SPECIAL PERFORMANCES</div>
-                </div>
                 <div className="tt-national-header">
-                  <span className="national-sub-tag">EVENING SESSION</span>
-                  <h4 className="national-main-topic">NATIONAL REPORTS</h4>
+                  <span className="national-sub-tag">NATIONAL REPORT · 15m</span>
+                  <h4 className="national-main-topic">UZBEKISTAN</h4>
                 </div>
-                <div className="tt-speakers-pair">
-                  {renderSpeakerBox("national-3")}
-                  {renderSpeakerBox("national-4")}
+                {renderSpeakerBox("national-1")}
+              </td>
+              {/* Thu: Cambodia */}
+              <td className="cell-target cell-target-evening">
+                <div className="tt-national-header">
+                  <span className="national-sub-tag">NATIONAL REPORT · 15m</span>
+                  <h4 className="national-main-topic">CAMBODIA</h4>
                 </div>
-                <div className="evening-sub-block mt-2">
-                  <div className="static-sub-mini">MESSAGES: Rev. Dr. Daniel Shinjong Baeq</div>
+                {renderSpeakerBox("national-3")}
+              </td>
+            </tr>
+
+            {/* 4. 7:35-7:50 (15m): National Reports 2 (Mongolia / Myanmar) */}
+            <tr className="tt-row-target-highlight">
+              <td className="cell-time highlight-time">7:35-7:50</td>
+              <td className="cell-min">15</td>
+              {/* Tue: Mongolia */}
+              <td className="cell-target cell-target-evening">
+                <div className="tt-national-header">
+                  <span className="national-sub-tag">NATIONAL REPORT · 15m</span>
+                  <h4 className="national-main-topic">MONGOLIA</h4>
                 </div>
+                {renderSpeakerBox("national-2")}
+              </td>
+              {/* Thu: Myanmar */}
+              <td className="cell-target cell-target-evening">
+                <div className="tt-national-header">
+                  <span className="national-sub-tag">NATIONAL REPORT · 15m</span>
+                  <h4 className="national-main-topic">MYANMAR</h4>
+                </div>
+                {renderSpeakerBox("national-4")}
+              </td>
+            </tr>
+
+            {/* 5. 7:50-8:00 (10m): Prayer */}
+            <tr className="tt-row-evening">
+              <td className="cell-time highlight-time">7:50-8:00</td>
+              <td className="cell-min">10</td>
+              {/* Tue: Prayer */}
+              <td className="cell-static">
+                PRAYER
+              </td>
+              {/* Thu: Prayer */}
+              <td className="cell-static">
+                PRAYER
+              </td>
+            </tr>
+
+            {/* 6. 8:00-8:50 (50m): Evening Messages */}
+            <tr className="tt-row-evening">
+              <td className="cell-time highlight-time">8:00-8:50</td>
+              <td className="cell-min">50</td>
+              {/* Tue: Rev. Jongboo Hwa */}
+              <td className="cell-static">
+                <div className="static-title">EVENING MESSAGES</div>
+                <div className="static-sub font-semibold text-sky-300">Rev. Jongboo Hwa</div>
+              </td>
+              {/* Thu: Rev. Dr. Daniel Shinjong Baeq */}
+              <td className="cell-static">
+                <div className="static-title">MESSAGES</div>
+                <div className="static-sub font-semibold text-sky-300">Rev. Dr. Daniel Shinjong Baeq</div>
               </td>
             </tr>
           </tbody>

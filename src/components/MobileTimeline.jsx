@@ -54,10 +54,16 @@ export function MobileTimeline({
           speakerIds: ['global-2']
         },
         {
-          time: '18:30 - 20:50',
+          time: '19:20 - 19:35 (15m)',
           category: 'national',
-          title: 'NATIONAL REPORTS',
-          speakerIds: ['national-1', 'national-2']
+          title: 'NATIONAL REPORT: Uzbekistan',
+          speakerIds: ['national-1']
+        },
+        {
+          time: '19:35 - 19:50 (15m)',
+          category: 'national',
+          title: 'NATIONAL REPORT: Mongolia',
+          speakerIds: ['national-2']
         }
       ]
     },
@@ -132,10 +138,16 @@ export function MobileTimeline({
           speakerIds: ['global-6']
         },
         {
-          time: '18:30 - 20:50',
+          time: '19:20 - 19:35 (15m)',
           category: 'national',
-          title: 'NATIONAL REPORTS',
-          speakerIds: ['national-3', 'national-4']
+          title: 'NATIONAL REPORT: Cambodia',
+          speakerIds: ['national-3']
+        },
+        {
+          time: '19:35 - 19:50 (15m)',
+          category: 'national',
+          title: 'NATIONAL REPORT: Myanmar',
+          speakerIds: ['national-4']
         }
       ]
     },
