@@ -514,10 +514,10 @@ export function TimetableGrid({
                 <div className="static-title">EVENING MESSAGES</div>
                 <div className="static-sub font-semibold text-sky-300">Rev. Jongboo Hwa</div>
               </td>
-              {/* Thu: Rev. Yohannes Nahuway */}
+              {/* Thu: Rev. Dr. Daniel Shinjong Baeq */}
               <td className="cell-static">
                 <div className="static-title">EVENING MESSAGES</div>
-                <div className="static-sub font-semibold text-sky-300">Rev. Yohannes Nahuway</div>
+                <div className="static-sub font-semibold text-sky-300">Rev. Dr. Daniel Shinjong Baeq</div>
               </td>
             </tr>
           </tbody>
