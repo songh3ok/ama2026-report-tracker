@@ -28,7 +28,7 @@ export function TimetableGrid({
           </span>
           
           <div className="tt-status-and-action">
-            {/* Status indicator moved to upper line: Not received yet vs Submitted */}
+            {/* Status indicator moved to upper line: Not Received vs Submitted */}
             <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
               {isSubmitted ? (
                 <>
@@ -38,7 +38,7 @@ export function TimetableGrid({
               ) : (
                 <>
                   <Clock size={10} />
-                  <span>Not received yet</span>
+                  <span>Not Received</span>
                 </>
               )}
             </span>

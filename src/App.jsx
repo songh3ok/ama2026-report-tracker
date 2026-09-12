@@ -108,7 +108,7 @@ export function App() {
         }
         return item;
       }));
-      showToast(`ℹ ${target.speakerName} reverted to Pending.`);
+      showToast(`ℹ ${target.speakerName} reverted to Not Received.`);
     } else {
       // Opening modal for mandatory questions before submitting
       setSelectedSpeaker(target);
@@ -222,7 +222,7 @@ export function App() {
           </div>
           <div className="kpi-pill kpi-pending">
             <Clock size={15} className="text-rose-400" />
-            <span className="kpi-label">Pending</span>
+            <span className="kpi-label">Not Received</span>
             <strong className="kpi-val text-rose-400">{pendingCount}</strong>
           </div>
         </div>
@@ -253,13 +253,13 @@ export function App() {
             onClick={() => setHighlightPendingOnly(prev => !prev)}
           >
             <Eye size={14} />
-            <span>{highlightPendingOnly ? 'Show All' : '🔴 Pending Only'}</span>
+            <span>{highlightPendingOnly ? 'Show All' : '🔴 Not Received Only'}</span>
           </button>
         </div>
       </div>
 
       <div className="table-guide-notice">
-        <span>💡 <strong>Real-time Guide:</strong> Click <strong>[Submit]</strong> on any speaker card to record submission status with date & time. Click a card to select computer platform (Windows / Mac) and material format (PPT, Keynote, PDF, etc.).</span>
+        <span>💡 <strong>Real-time Guide:</strong> Click <strong>[Start]</strong> on any speaker card to fill mandatory questions and submit. Click anywhere on a card to view or edit details.</span>
       </div>
 
       {/* Main Content: Mobile Timeline or PDF Grid */}
