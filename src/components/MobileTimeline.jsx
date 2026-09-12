@@ -685,17 +685,6 @@ export function MobileTimeline({
     return { start, end, duration };
   };
 
-  const phaseLabel = (() => {
-    if (simulatedDate) {
-      if (isPreConvention(simulatedDate)) return '개막 전 · All 최우선';
-      if (isPostConvention(simulatedDate)) return '9/19 이후 · All 최우선';
-      return '대회 기간 · 당일 최우선';
-    }
-    if (isPreConvention(currentSystemDate)) return '개막 전 · All 최우선';
-    if (isPostConvention(currentSystemDate)) return '대회 종료 · All 최우선';
-    return '대회 진행 중 · 당일 최우선';
-  })();
-
   return (
     <div className="tl">
       {/* Live date status & date simulation */}
@@ -703,12 +692,11 @@ export function MobileTimeline({
         <span className={`live-dot ${simulatedDate ? 'sim' : ''}`} aria-hidden="true" />
         <span className="tl-datebar-text">
           {simulatedDate ? (
-            <><strong>시뮬레이션 모드</strong> · 가상 날짜 {simulatedDate}</>
+            <><strong>시뮬레이션</strong> {simulatedDate}</>
           ) : (
-            <><strong>자정 기준 자동 갱신</strong> · 오늘 {currentSystemDate}</>
+            <><strong>오늘</strong> {currentSystemDate}</>
           )}
         </span>
-        <span className="chip">{phaseLabel}</span>
 
         <div className="tl-datebar-actions">
           {simulatedDate && (
@@ -817,7 +805,7 @@ export function MobileTimeline({
                         {session.speakerName}
                         {session.affiliation && <span> · {session.affiliation}</span>}
                       </div>
-                    ) : session.details ? (
+                    ) : session.category === 'closing' && session.details ? (
                       <div className="tl-static-desc">{session.details}</div>
                     ) : null}
                   </div>

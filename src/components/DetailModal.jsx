@@ -157,7 +157,7 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
                   <span className="field-step">2</span>
                   Material formats
                 </span>
-                <span className="field-req">Required · select all that apply</span>
+                <span className="field-req">Required</span>
               </div>
               <div className="chips">
                 {FILE_TYPE_OPTIONS.map(type => {

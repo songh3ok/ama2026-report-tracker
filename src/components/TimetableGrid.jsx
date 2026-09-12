@@ -190,15 +190,12 @@ export function TimetableGrid({
             </td>
             <td className="cell-workshop">
               <div className="ws-title">Workshops-1</div>
-              <div className="ws-note">Tracks A–G · excluded</div>
             </td>
             <td className="cell-workshop">
               <div className="ws-title">Workshops-3</div>
-              <div className="ws-note">Tracks A–G · excluded</div>
             </td>
             <td className="cell-workshop">
               <div className="ws-title">Workshops-5</div>
-              <div className="ws-note">Tracks A–G · excluded</div>
             </td>
             <td className="cell-muted" rowSpan={11} />
           </tr>
@@ -216,15 +213,12 @@ export function TimetableGrid({
             <td className="cell-min">50</td>
             <td className="cell-workshop">
               <div className="ws-title">Workshops-2</div>
-              <div className="ws-note">Tracks A–G · excluded</div>
             </td>
             <td className="cell-workshop">
               <div className="ws-title">Workshops-4</div>
-              <div className="ws-note">Tracks A–G · excluded</div>
             </td>
             <td className="cell-workshop">
               <div className="ws-title">Workshops-6</div>
-              <div className="ws-note">Tracks A–G · excluded</div>
             </td>
           </tr>
 

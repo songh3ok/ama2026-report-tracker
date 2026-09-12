@@ -281,10 +281,6 @@ export function App() {
         </button>
       </div>
 
-      <p className="hint">
-        Click <strong>Start</strong> on a speaker to record platform and file formats. Click any card to view or edit.
-      </p>
-
       {viewMode === 'mobile' ? (
         <MobileTimeline
           speakersMap={speakersMap}
