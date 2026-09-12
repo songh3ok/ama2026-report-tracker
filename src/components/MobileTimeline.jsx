@@ -11,14 +11,68 @@ export function MobileTimeline({
 
   const DAYS = [
     { key: 'all', label: 'All Days' },
+    { key: '2026-09-14', label: 'Sep 14 (Mon) · Day 1' },
     { key: '2026-09-15', label: 'Sep 15 (Tue) · Day 2' },
     { key: '2026-09-16', label: 'Sep 16 (Wed) · Day 3' },
     { key: '2026-09-17', label: 'Sep 17 (Thu) · Day 4' },
     { key: '2026-09-18', label: 'Sep 18 (Fri) · Day 5' }
   ];
 
-  // Grouped sessions by day including Biblical Exegesis
+  // Grouped sessions by day including Day 1 and Biblical Exegesis
   const timelineSchedule = [
+    {
+      date: '2026-09-14',
+      dateLabel: 'Sep 14 (Mon) · Day 1',
+      sessions: [
+        {
+          time: '14:30 - 17:00 (2:30 – 5:00 PM)',
+          category: 'registration',
+          title: 'REGISTRATION',
+          speakerIds: [],
+          details: 'Convention Registration & Badge / Materials Pick-up',
+          isStatic: true
+        },
+        {
+          time: '17:00 - 18:30 (5:00 – 6:30 PM)',
+          category: 'meal',
+          title: 'DINNER',
+          speakerIds: [],
+          isStatic: true
+        },
+        {
+          time: '18:30 - 19:00 (6:30 – 7:00 PM)',
+          category: 'worship',
+          title: 'PRAISE & WORSHIP',
+          speakerIds: [],
+          isStatic: true
+        },
+        {
+          time: '19:00 - 19:20 (7:00 – 7:20 PM)',
+          category: 'performance',
+          title: 'SPECIAL PERFORMANCES',
+          speakerIds: [],
+          isStatic: true
+        },
+        {
+          time: '19:20 - 20:00 (7:20 – 8:00 PM)',
+          category: 'reception',
+          title: 'WELCOME RECEPTION',
+          speakerIds: [],
+          details: 'Official Welcome Reception for Delegates & Guests',
+          isStatic: true
+        },
+        {
+          time: '20:00 - 20:50 (8:00 – 8:50 PM)',
+          category: 'evening',
+          title: 'EVENING MESSAGES',
+          speakerIds: [],
+          speakerName: 'Rev. Jaehoon Lee',
+          role: 'Preacher',
+          affiliation: 'Onnuri Community Church',
+          isStatic: true
+        }
+      ]
+    },
     {
       date: '2026-09-15',
       dateLabel: 'Sep 15 (Tue) · Day 2',
@@ -165,15 +219,30 @@ export function MobileTimeline({
     }
   ];
 
-  const filteredDays = selectedDay === 'all' 
+  const filteredDays = (selectedDay === 'all' 
     ? timelineSchedule 
-    : timelineSchedule.filter(d => d.date === selectedDay);
+    : timelineSchedule.filter(d => d.date === selectedDay)
+  ).filter(dayGroup => {
+    if (!highlightPendingOnly) return true;
+    if (selectedDay !== 'all') return true;
+    return dayGroup.sessions.some(session => {
+      const speakers = (session.speakerIds || []).map(id => speakersMap[id]).filter(Boolean);
+      return speakers.some(s => s.status === 'pending');
+    });
+  });
 
   const getCategoryClass = (cat) => {
     if (cat === 'biblical') return 'banner-biblical';
     if (cat === 'plenary') return 'banner-plenary';
     if (cat === 'global') return 'banner-global';
-    return 'banner-national';
+    if (cat === 'national') return 'banner-national';
+    if (cat === 'registration') return 'banner-registration';
+    if (cat === 'evening') return 'banner-evening';
+    if (cat === 'reception') return 'banner-reception';
+    if (cat === 'worship') return 'banner-worship';
+    if (cat === 'performance') return 'banner-performance';
+    if (cat === 'meal') return 'banner-meal';
+    return 'banner-general';
   };
 
   return (
@@ -201,119 +270,164 @@ export function MobileTimeline({
             </div>
 
             <div className="mobile-sessions-list">
-              {dayGroup.sessions.map((session, sIdx) => {
-                const speakers = session.speakerIds.map(id => speakersMap[id]).filter(Boolean);
-                const hasPending = speakers.some(s => s.status === 'pending');
+              {(() => {
+                const sessionElements = dayGroup.sessions.map((session, sIdx) => {
+                  const speakers = (session.speakerIds || []).map(id => speakersMap[id]).filter(Boolean);
+                  const hasPending = speakers.some(s => s.status === 'pending');
 
-                if (highlightPendingOnly && !hasPending) {
-                  return null;
-                }
+                  if (highlightPendingOnly && !hasPending) {
+                    return null;
+                  }
 
-                return (
-                  <div key={sIdx} className="mobile-session-block">
-                    <div className="mobile-session-top">
-                      <span className="mobile-time-badge">{session.time}</span>
-                      <span className={`tt-session-banner ${getCategoryClass(session.category)}`}>
-                        {session.title}
-                      </span>
-                    </div>
+                  return (
+                    <div key={sIdx} className="mobile-session-block">
+                      <div className="mobile-session-top">
+                        <span className="mobile-time-badge">{session.time}</span>
+                        <span className={`tt-session-banner ${getCategoryClass(session.category)}`}>
+                          {session.title}
+                        </span>
+                      </div>
 
-                    <div className="mobile-speakers-col">
-                      {speakers.map(speaker => {
-                        const isSubmitted = speaker.status === 'submitted';
-
-                        if (highlightPendingOnly && isSubmitted) {
-                          return null;
-                        }
-
-                        return (
-                          <div 
-                            key={speaker.id}
-                            className={`mobile-speaker-card ${isSubmitted ? 'is-submitted' : 'is-pending'}`}
-                            onClick={() => onOpenEdit(speaker)}
-                          >
-                            <div className="mobile-card-row-top">
-                              <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
-                                {speaker.role}
-                              </span>
-                              
-                              <div className="mobile-status-and-action">
-                                {/* Status badge: NOT RECEIVED vs SUBMITTED */}
-                                <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
-                                  {isSubmitted ? (
-                                    <>
-                                      <CheckCircle2 size={9} />
-                                      <span>SUBMITTED</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Clock size={9} />
-                                      <span>NOT RECEIVED</span>
-                                    </>
-                                  )}
+                      {session.isStatic ? (
+                        session.speakerName ? (
+                          <div className="mobile-speakers-col">
+                            <div className="mobile-speaker-card is-static-speaker">
+                              <div className="mobile-card-row-top">
+                                <span className="tt-role-pill role-lecturer">
+                                  {session.role || 'Preacher'}
                                 </span>
-
-                                {/* Action button: "Start" when pending, "Undo" when submitted */}
-                                {isSubmitted ? (
-                                  <button
-                                    className="mobile-action-btn btn-undo"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      onToggleStatus(speaker.id);
-                                    }}
-                                  >
-                                    Undo
-                                  </button>
-                                ) : (
-                                  <button
-                                    className="mobile-action-btn btn-start"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      onOpenEdit(speaker);
-                                    }}
-                                  >
-                                    <Play size={10} fill="currentColor" />
-                                    <span>Start</span>
-                                  </button>
-                                )}
+                                <span className="tt-status-tag tag-general">
+                                  GENERAL SESSION
+                                </span>
                               </div>
-                            </div>
 
-                            <div className="mobile-speaker-name">
-                              {speaker.speakerName}
-                            </div>
-
-                            <div className="mobile-speaker-affil">
-                              {speaker.affiliationOrCountry}
-                            </div>
-
-                            {/* Platform OS, File Types & Timestamp (When submitted) */}
-                            {isSubmitted && (
-                              <div className="mobile-meta-badges">
-                                {speaker.computerOS && (
-                                  <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
-                                    {speaker.computerOS}
-                                  </span>
-                                )}
-                                {speaker.fileTypes && speaker.fileTypes.map(ft => (
-                                  <span key={ft} className="tt-filetype-pill">
-                                    {ft}
-                                  </span>
-                                ))}
-                                {speaker.submittedAt && (
-                                  <span className="tt-timestamp-pill">
-                                    ✓ {speaker.submittedAt}
-                                  </span>
-                                )}
+                              <div className="mobile-speaker-name">
+                                {session.speakerName}
                               </div>
-                            )}
+
+                              {session.affiliation && (
+                                <div className="mobile-speaker-affil">
+                                  {session.affiliation}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        );
-                      })}
+                        ) : session.details ? (
+                          <div className="mobile-static-desc">
+                            {session.details}
+                          </div>
+                        ) : null
+                      ) : (
+                        <div className="mobile-speakers-col">
+                          {speakers.map(speaker => {
+                            const isSubmitted = speaker.status === 'submitted';
+
+                            if (highlightPendingOnly && isSubmitted) {
+                              return null;
+                            }
+
+                            return (
+                              <div 
+                                key={speaker.id}
+                                className={`mobile-speaker-card ${isSubmitted ? 'is-submitted' : 'is-pending'}`}
+                                onClick={() => onOpenEdit(speaker)}
+                              >
+                                <div className="mobile-card-row-top">
+                                  <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
+                                    {speaker.role}
+                                  </span>
+                                  
+                                  <div className="mobile-status-and-action">
+                                    {/* Status badge: NOT RECEIVED vs SUBMITTED */}
+                                    <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
+                                      {isSubmitted ? (
+                                        <>
+                                          <CheckCircle2 size={9} />
+                                          <span>SUBMITTED</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Clock size={9} />
+                                          <span>NOT RECEIVED</span>
+                                        </>
+                                      )}
+                                    </span>
+
+                                    {/* Action button: "Start" when pending, "Undo" when submitted */}
+                                    {isSubmitted ? (
+                                      <button
+                                        className="mobile-action-btn btn-undo"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          onToggleStatus(speaker.id);
+                                        }}
+                                      >
+                                        Undo
+                                      </button>
+                                    ) : (
+                                      <button
+                                        className="mobile-action-btn btn-start"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          onOpenEdit(speaker);
+                                        }}
+                                      >
+                                        <Play size={10} fill="currentColor" />
+                                        <span>Start</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="mobile-speaker-name">
+                                  {speaker.speakerName}
+                                </div>
+
+                                <div className="mobile-speaker-affil">
+                                  {speaker.affiliationOrCountry}
+                                </div>
+
+                                {/* Platform OS, File Types & Timestamp (When submitted) */}
+                                {isSubmitted && (
+                                  <div className="mobile-meta-badges">
+                                    {speaker.computerOS && (
+                                      <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
+                                        {speaker.computerOS}
+                                      </span>
+                                    )}
+                                    {speaker.fileTypes && speaker.fileTypes.map(ft => (
+                                      <span key={ft} className="tt-filetype-pill">
+                                        {ft}
+                                      </span>
+                                    ))}
+                                    {speaker.submittedAt && (
+                                      <span className="tt-timestamp-pill">
+                                        ✓ {speaker.submittedAt}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                });
+
+                const validSessions = sessionElements.filter(Boolean);
+                if (validSessions.length === 0) {
+                  return (
+                    <div className="mobile-empty-day-note">
+                      <span>{dayGroup.date === '2026-09-14' 
+                        ? 'ℹ️ Day 1 is Opening & Registration Day. No report submissions required.' 
+                        : '✓ No pending submissions found for this day.'}</span>
+                    </div>
+                  );
+                }
+                return validSessions;
+              })()}
             </div>
           </div>
         ))}
