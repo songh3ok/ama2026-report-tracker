@@ -1615,3 +1615,136 @@
     font-size: 28px;
   }
 }
+
+/* ============================================================
+   Phone typography — readable sizes & touch targets (≤768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Masthead */
+  .eyebrow { font-size: 12.5px; }
+  .masthead-title { font-size: 38px; }
+  .masthead-sub { font-size: 15.5px; line-height: 1.45; }
+  .btn { height: 44px; font-size: 15.5px; }
+  .btn-icon { width: 44px; }
+
+  /* Overview */
+  .overview-label { font-size: 14.5px; }
+  .figure-num { font-size: 56px; }
+  .figure-total { font-size: 28px; }
+  .figure-pct { font-size: 15px; }
+  .stat {
+    align-items: start;
+  }
+  .stat-dot {
+    margin-top: 6px;
+  }
+  .stat-label {
+    font-size: 14px;
+    line-height: 1.3;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .stat-val { font-size: 24px; }
+
+  /* Toolbar */
+  .segmented button { height: 40px; font-size: 15.5px; }
+  .toggle { font-size: 15.5px; }
+  .toggle-track { width: 40px; height: 22px; }
+  .toggle-thumb { width: 18px; height: 18px; }
+  .toggle.on .toggle-thumb { transform: translateX(18px); }
+  .hint { font-size: 14.5px; line-height: 1.5; }
+
+  /* Date status & simulation */
+  .tl-datebar { font-size: 14px; }
+  .chip { height: 26px; font-size: 13px; }
+  .link-btn { height: 34px; font-size: 14px; }
+  .tl-sim-label { font-size: 14px; }
+  .sim-btn { height: 34px; font-size: 14px; }
+
+  /* Day tabs */
+  .day-tab { min-width: 116px; padding: 10px 14px; }
+  .day-tab-main { font-size: 16px; }
+  .day-tab-sub { font-size: 13.5px; }
+  .tab-flag { height: 20px; font-size: 11.5px; }
+
+  /* Day sections */
+  .day-eyebrow { font-size: 13px; }
+  .day-title { font-size: 32px; }
+  .day-count { font-size: 14.5px; }
+
+  .tl-item {
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .tl-time { font-size: 14px; }
+  .tl-static-title { font-size: 16px; }
+  .tl-static-desc,
+  .tl-static-speaker { font-size: 14.5px; }
+  .kicker { font-size: 13px; }
+  .kicker::before { width: 7px; height: 7px; }
+  .tl-title { font-size: 20px; }
+  .empty-note { font-size: 15px; }
+
+  /* Speaker cards */
+  .spk { gap: 6px; padding: 14px 14px 14px 18px; }
+  .spk-top { min-height: 34px; }
+  .spk-role { font-size: 13.5px; }
+  .spk-name { font-size: 18px; }
+  .spk-affil { font-size: 14.5px; }
+  .spk-meta { gap: 6px; }
+  .tag { height: 26px; padding: 0 9px; font-size: 13.5px; }
+  .spk-time { font-size: 13px; }
+  .btn-start { height: 36px; padding: 0 15px; font-size: 15px; }
+  .badge-done { height: 32px; padding: 0 9px; font-size: 14px; }
+  .btn-undo { width: 36px; height: 36px; }
+
+  /* Full grid (scrolls sideways on phones) */
+  .tt { min-width: 1480px; font-size: 14px; }
+  .th-time,
+  .th-min { font-size: 13px; }
+  .th-day-main { font-size: 16px; }
+  .th-day-sub { font-size: 13.5px; }
+  .cell-time { font-size: 13.5px; }
+  .cell-min { font-size: 13px; }
+  .cell-static { font-size: 13px; }
+  .static-speaker { font-size: 15px; }
+  .tt-head .kicker { font-size: 12px; }
+  .tt-head-title { font-size: 17px; }
+  .ws-title { font-size: 15px; }
+  .ws-note { font-size: 13px; }
+  .closing-title { font-size: 13px; }
+  .closing-list { font-size: 14.5px; }
+  .registration-title { font-size: 14px; }
+  .registration-time { font-size: 13.5px; }
+  .spk-compact { padding: 10px 10px 10px 14px; }
+  .spk-compact .spk-top { min-height: 28px; }
+  .spk-compact .spk-role { font-size: 13px; }
+  .spk-compact .spk-name { font-size: 16px; }
+  .spk-compact .spk-affil { font-size: 13.5px; }
+  .spk-compact .tag { height: 22px; padding: 0 7px; font-size: 12.5px; }
+  .spk-compact .spk-time { font-size: 12.5px; }
+  .spk-compact .btn-start { height: 30px; padding: 0 11px; font-size: 14px; }
+  .spk-compact .badge-done { height: 28px; padding: 0 8px; font-size: 13px; }
+  .spk-compact .btn-undo { width: 30px; height: 30px; }
+
+  /* Modal */
+  .modal-meta { font-size: 14px; }
+  .modal-title { font-size: 32px; }
+  .modal-sub { font-size: 15.5px; }
+  .modal-close { width: 44px; height: 44px; }
+  .field-name { font-size: 16px; }
+  .field-req { font-size: 13.5px; }
+  .field-step { width: 22px; height: 22px; font-size: 12.5px; }
+  .option { height: 50px; font-size: 17px; }
+  .chip-opt { height: 42px; padding: 0 17px; font-size: 15.5px; }
+  .chips { gap: 8px; }
+  .text-input { height: 50px; font-size: 16px; }
+  .form-error { font-size: 15px; }
+  .btn-primary { height: 50px; padding: 0 22px; font-size: 16.5px; }
+  .btn-text-danger { height: 50px; font-size: 15.5px; }
+
+  /* Toast & footer */
+  .toast { font-size: 15px; padding: 12px 18px; }
+  .footer { font-size: 14px; }
+}
