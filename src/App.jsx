@@ -4,18 +4,7 @@ import { INITIAL_SPEAKERS, CONVENTION_INFO } from './data/speakersData';
 import { TimetableGrid } from './components/TimetableGrid';
 import { MobileTimeline } from './components/MobileTimeline';
 import { DetailModal } from './components/DetailModal';
-import { 
-  FileSpreadsheet, 
-  RefreshCw, 
-  Sun, 
-  Moon, 
-  CheckCircle2, 
-  Clock,
-  Eye,
-  Calendar,
-  Smartphone,
-  LayoutGrid
-} from 'lucide-react';
+import { Download, RotateCcw, Sun, Moon, CheckCircle2, ListOrdered, LayoutGrid } from 'lucide-react';
 
 const STORAGE_KEY = 'ama2026_timetable_en_v1';
 const THEME_KEY = 'ama2026_theme';
@@ -68,6 +57,7 @@ export function App() {
   // Sync theme
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme;
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
@@ -166,103 +156,129 @@ export function App() {
   const percent = Math.round((submittedCount / totalCount) * 100);
 
   return (
-    <div className="simple-app-wrapper">
-      {/* Toast Notification */}
+    <div className="app">
       {toastMsg && (
-        <div className="simple-toast animate-fade-in">
-          <CheckCircle2 size={16} />
+        <div className="toast" role="status">
+          <CheckCircle2 size={15} />
           <span>{toastMsg}</span>
         </div>
       )}
 
-      {/* Top Convention Header */}
-      <header className="simple-header glass-panel">
-        <div className="header-info">
-          <div className="convention-badge">
-            <Calendar size={13} />
-            <span>The 15th AMA Triennial Convention, Incheon 2026</span>
-          </div>
-          <h1 className="header-heading">Report & Presentation Submission Tracker</h1>
-          <p className="header-subheading">
-            {CONVENTION_INFO.theme} · Sep 14 (Mon) – Sep 18 (Fri), 2026
+      <header className="masthead">
+        <div className="masthead-text">
+          <div className="eyebrow">The 15th AMA Triennial Convention · Incheon 2026</div>
+          <h1 className="masthead-title">
+            Report &amp; Presentation <em>Tracker</em>
+          </h1>
+          <p className="masthead-sub">
+            {CONVENTION_INFO.theme} · {CONVENTION_INFO.period}
           </p>
         </div>
 
-        <div className="header-buttons">
-          <button 
-            className="btn-simple" 
-            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
-            title="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
-          </button>
-          <button className="btn-simple" onClick={handleExportCSV} title="Export CSV spreadsheet">
-            <FileSpreadsheet size={15} className="text-emerald-400" />
+        <div className="masthead-actions">
+          <button className="btn" onClick={handleExportCSV} title="Export CSV spreadsheet">
+            <Download size={14} />
             <span className="hide-on-mobile">Export CSV</span>
           </button>
-          <button className="btn-simple btn-muted" onClick={handleReset} title="Reset data">
-            <RefreshCw size={14} />
+          <button
+            className="btn btn-icon"
+            onClick={() => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))}
+            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+          <button
+            className="btn btn-icon btn-danger"
+            onClick={handleReset}
+            title="Reset data"
+            aria-label="Reset data"
+          >
+            <RotateCcw size={14} />
           </button>
         </div>
       </header>
 
-      {/* Summary KPI & Action Bar */}
-      <div className="summary-strip glass-panel">
-        <div className="kpi-group">
-          <div className="kpi-pill kpi-total">
-            <span className="kpi-label">Target</span>
-            <strong className="kpi-val">{totalCount}</strong>
+      {/* Summary */}
+      <section className="overview" aria-label="Submission summary">
+        <div className="overview-main">
+          <div className="overview-label">Materials submitted</div>
+          <div className="overview-figure">
+            <span className="figure-num">{submittedCount}</span>
+            <span className="figure-total">/ {totalCount}</span>
+            <span className="figure-pct">{percent}%</span>
           </div>
-          <div className="kpi-pill kpi-submitted">
-            <CheckCircle2 size={15} className="text-emerald-400" />
-            <span className="kpi-label">Submitted</span>
-            <strong className="kpi-val text-emerald-400">{submittedCount}</strong>
-            <span className="kpi-badge">({percent}%)</span>
-          </div>
-          <div className="kpi-pill kpi-pending">
-            <Clock size={15} className="text-rose-400" />
-            <span className="kpi-label">Not Received</span>
-            <strong className="kpi-val text-rose-400">{pendingCount}</strong>
+          <div
+            className="progress"
+            role="progressbar"
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div className="progress-bar" style={{ width: `${percent}%` }} />
           </div>
         </div>
 
-        <div className="filter-controls">
-          {/* View mode switcher */}
-          <div className="view-mode-pill">
-            <button
-              className={`view-pill-btn ${viewMode === 'mobile' ? 'active' : ''}`}
-              onClick={() => setViewMode('mobile')}
-              title="Mobile Day-by-Day Timeline"
-            >
-              <Smartphone size={14} />
-              <span>Timeline</span>
-            </button>
-            <button
-              className={`view-pill-btn ${viewMode === 'desktop' ? 'active' : ''}`}
-              onClick={() => setViewMode('desktop')}
-              title="Full PDF Timetable Grid"
-            >
-              <LayoutGrid size={14} />
-              <span>Full Grid</span>
-            </button>
+        <div className="overview-stats">
+          <div className="stat">
+            <span className="stat-dot is-ok" />
+            <span className="stat-label">Submitted</span>
+            <span className="stat-val">{submittedCount}</span>
           </div>
+          <div className="stat">
+            <span className="stat-dot is-warn" />
+            <span className="stat-label">Not received</span>
+            <span className="stat-val">{pendingCount}</span>
+          </div>
+          <div className="stat">
+            <span className="stat-dot" />
+            <span className="stat-label">Target</span>
+            <span className="stat-val">{totalCount}</span>
+          </div>
+        </div>
+      </section>
 
-          <button 
-            className={`toggle-filter-btn ${highlightPendingOnly ? 'active' : ''}`}
-            onClick={() => setHighlightPendingOnly(prev => !prev)}
+      {/* Toolbar */}
+      <div className="toolbar">
+        <div className="segmented" role="tablist" aria-label="View mode">
+          <button
+            role="tab"
+            aria-selected={viewMode === 'mobile'}
+            className={viewMode === 'mobile' ? 'active' : ''}
+            onClick={() => setViewMode('mobile')}
+            title="Day-by-day timeline"
           >
-            <Eye size={14} />
-            <span>{highlightPendingOnly ? 'Show All' : '🔴 Not Received Only'}</span>
+            <ListOrdered size={14} />
+            <span>Timeline</span>
+          </button>
+          <button
+            role="tab"
+            aria-selected={viewMode === 'desktop'}
+            className={viewMode === 'desktop' ? 'active' : ''}
+            onClick={() => setViewMode('desktop')}
+            title="Full PDF timetable grid"
+          >
+            <LayoutGrid size={14} />
+            <span>Full grid</span>
           </button>
         </div>
+
+        <button
+          className={`toggle ${highlightPendingOnly ? 'on' : ''}`}
+          aria-pressed={highlightPendingOnly}
+          onClick={() => setHighlightPendingOnly(prev => !prev)}
+        >
+          <span className="toggle-track" aria-hidden="true">
+            <span className="toggle-thumb" />
+          </span>
+          <span>Not received only</span>
+        </button>
       </div>
 
-      <div className="table-guide-notice">
-        <span>💡 <strong>Real-time Guide:</strong> Click <strong>[Start]</strong> on any speaker card to fill mandatory questions and submit. Click anywhere on a card to view or edit details.</span>
-      </div>
+      <p className="hint">
+        Click <strong>Start</strong> on a speaker to record platform and file formats. Click any card to view or edit.
+      </p>
 
-      {/* Main Content: Mobile Timeline or PDF Grid */}
       {viewMode === 'mobile' ? (
         <MobileTimeline
           speakersMap={speakersMap}
@@ -279,7 +295,6 @@ export function App() {
         />
       )}
 
-      {/* Detail Edit Modal */}
       <DetailModal
         speaker={selectedSpeaker}
         isOpen={Boolean(selectedSpeaker)}
@@ -287,9 +302,8 @@ export function App() {
         onSave={handleSaveModal}
       />
 
-      {/* Footer */}
-      <footer className="simple-footer">
-        <p>The 15th AMA Triennial Convention Incheon 2026 Organizing Committee</p>
+      <footer className="footer">
+        The 15th AMA Triennial Convention Incheon 2026 · Organizing Committee
       </footer>
     </div>
   );

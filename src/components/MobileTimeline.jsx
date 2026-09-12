@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckCircle2, Clock, Play, Calendar, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+import { RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+import { SpeakerCard } from './SpeakerCard';
 
 // Get local date string in YYYY-MM-DD format
 const getLocalDateString = () => {
@@ -654,294 +655,234 @@ export function MobileTimeline({
     });
   });
 
-  const getCategoryClass = (cat) => {
-    if (cat === 'biblical') return 'banner-biblical';
-    if (cat === 'plenary') return 'banner-plenary';
-    if (cat === 'global') return 'banner-global';
-    if (cat === 'national') return 'banner-national';
-    if (cat === 'registration') return 'banner-registration';
-    if (cat === 'evening') return 'banner-evening';
-    if (cat === 'reception') return 'banner-reception';
-    if (cat === 'worship') return 'banner-worship';
-    if (cat === 'performance') return 'banner-performance';
-    if (cat === 'meal') return 'banner-meal';
-    if (cat === 'break') return 'banner-break';
-    if (cat === 'workshop') return 'banner-workshop';
-    if (cat === 'fellowship') return 'banner-fellowship';
-    if (cat === 'closing') return 'banner-closing';
-    if (cat === 'departure') return 'banner-departure';
-    return 'banner-general';
+  const CATEGORY_KICKER = {
+    biblical: 'Morning Session',
+    plenary: 'Plenary',
+    global: 'Global Links',
+    national: 'National Report'
   };
 
+  // "PRAISE & WORSHIP" -> "Praise & Worship"
+  const toTitleCase = (str) =>
+    str.toLowerCase().replace(/(^|[\s(\-/&])([a-z])/g, (_, p, c) => p + c.toUpperCase());
+
+  // "PLENARY: Diaspora" -> "Diaspora"; "BIBLICAL EXEGESIS (DAY 2)" -> "Biblical Exegesis"
+  const getHeading = (title) => {
+    const idx = title.indexOf(':');
+    const raw = idx === -1 ? toTitleCase(title) : title.slice(idx + 1).trim();
+    return raw.replace(/\s*\(Day \d\)$/i, '');
+  };
+
+  // "13:40 - 13:55 (1:40 – 1:55 PM, 15m)" -> { start: '1:40', end: '1:55 PM', duration: '15m' }
+  const parseTime = (raw) => {
+    const match = raw.match(/\(([^)]*)\)/);
+    const inner = match ? match[1] : raw;
+    const [range, duration] = inner.split(',').map(part => part.trim());
+    const [rawStart, end] = range.split('–').map(part => part.trim());
+    // "8:50" + "9:30 AM" -> "8:50 AM" so a start time is never ambiguous on its own
+    const meridiem = end && end.match(/\s(AM|PM)$/);
+    const start = meridiem && !/(AM|PM)$/.test(rawStart) ? `${rawStart} ${meridiem[1]}` : rawStart;
+    return { start, end, duration };
+  };
+
+  const phaseLabel = (() => {
+    if (simulatedDate) {
+      if (isPreConvention(simulatedDate)) return '개막 전 · All 최우선';
+      if (isPostConvention(simulatedDate)) return '9/19 이후 · All 최우선';
+      return '대회 기간 · 당일 최우선';
+    }
+    if (isPreConvention(currentSystemDate)) return '개막 전 · All 최우선';
+    if (isPostConvention(currentSystemDate)) return '대회 종료 · All 최우선';
+    return '대회 진행 중 · 당일 최우선';
+  })();
+
   return (
-    <div className="mobile-timeline-wrapper">
-      {/* Real-time status & Date simulation bar */}
-      <div className="timeline-date-status-bar glass-panel">
-        <div className="timeline-date-status-top">
-          <div className="timeline-date-info">
-            <span className={`live-clock-dot ${simulatedDate ? 'sim-mode' : ''}`} />
-            <span className="timeline-date-current">
-              {simulatedDate ? (
-                <>
-                  <strong className="text-amber-400">시뮬레이션 모드</strong>: {simulatedDate} 가상 날짜
-                  {isPreConvention(simulatedDate) && <span className="pre-event-badge">개막 전 · All 최우선</span>}
-                  {isPostConvention(simulatedDate) && <span className="pre-event-badge">9/19 이후 · All 최우선</span>}
-                  {isDuringConvention(simulatedDate) && <span className="pre-event-badge">대회 기간 · 당일 최우선</span>}
-                </>
-              ) : (
-                <>
-                  <strong>자정 기준 자동 갱신 중</strong> (오늘: {currentSystemDate})
-                  {isPreConvention(currentSystemDate) && (
-                    <span className="pre-event-badge">개막 전 · All 최우선</span>
-                  )}
-                  {isPostConvention(currentSystemDate) && (
-                    <span className="pre-event-badge">대회 종료 · All 최우선</span>
-                  )}
-                  {isDuringConvention(currentSystemDate) && (
-                    <span className="pre-event-badge">대회 진행 중 · 당일 최우선</span>
-                  )}
-                </>
-              )}
-            </span>
-          </div>
+    <div className="tl">
+      {/* Live date status & date simulation */}
+      <div className="tl-datebar">
+        <span className={`live-dot ${simulatedDate ? 'sim' : ''}`} aria-hidden="true" />
+        <span className="tl-datebar-text">
+          {simulatedDate ? (
+            <><strong>시뮬레이션 모드</strong> · 가상 날짜 {simulatedDate}</>
+          ) : (
+            <><strong>자정 기준 자동 갱신</strong> · 오늘 {currentSystemDate}</>
+          )}
+        </span>
+        <span className="chip">{phaseLabel}</span>
 
-          <div className="timeline-status-actions">
-            {simulatedDate && (
-              <button
-                className="sim-btn sim-reset-btn"
-                onClick={() => {
-                  setSimulatedDate(null);
-                  setSelectedDay(getDefaultDayKey(currentSystemDate));
-                }}
-                title="실시간 시스템 날짜로 복귀"
-              >
-                <RotateCcw size={11} />
-                <span>실시간 복귀</span>
-              </button>
-            )}
+        <div className="tl-datebar-actions">
+          {simulatedDate && (
             <button
-              className="timeline-sim-toggle-btn"
-              onClick={() => setShowSimPanel(prev => !prev)}
-              title="날짜 테스트 메뉴 열기/닫기"
+              className="link-btn warn"
+              onClick={() => {
+                setSimulatedDate(null);
+                setSelectedDay(getDefaultDayKey(currentSystemDate));
+              }}
+              title="실시간 시스템 날짜로 복귀"
             >
-              <span>날짜 테스트</span>
-              {showSimPanel ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              <RotateCcw size={12} />
+              <span>실시간 복귀</span>
             </button>
-          </div>
-        </div>
-
-        {showSimPanel && (
-          <div className="timeline-date-simulator-panel animate-fade-in">
-            <span className="sim-label">가상 날짜 선택 (자정 변경 즉시 확인):</span>
-            <div className="sim-btn-group">
-              {SIMULATION_PRESETS.map(d => (
-                <button
-                  key={d.key}
-                  className={`sim-btn ${effectiveDate === d.key ? 'active' : ''}`}
-                  onClick={() => {
-                    setSimulatedDate(d.key);
-                    setSelectedDay(getDefaultDayKey(d.key));
-                  }}
-                >
-                  {d.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Day selector tabs: [해당날짜 (Today)] -> [All Days] -> [다음날...] -> [전날] */}
-      <div className="mobile-day-tabs">
-        {orderedDayTabs.map(day => (
+          )}
           <button
-            key={day.key}
-            className={`mobile-day-tab ${selectedDay === day.key ? 'active' : ''} ${day.isToday ? 'is-today' : ''} ${day.isPast ? 'is-past' : ''}`}
-            onClick={() => setSelectedDay(day.key)}
+            className="link-btn"
+            onClick={() => setShowSimPanel(prev => !prev)}
+            aria-expanded={showSimPanel}
+            title="날짜 테스트 메뉴 열기/닫기"
           >
-            <span>{day.label}</span>
-            {day.isToday && <span className="tab-today-pill">Today</span>}
-            {day.isPast && <span className="tab-past-pill">전날</span>}
+            <span>날짜 테스트</span>
+            {showSimPanel ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
-        ))}
+        </div>
       </div>
 
-      {/* Vertical Timeline List */}
-      <div className="mobile-days-container">
-        {filteredDays.map(dayGroup => (
-          <div key={dayGroup.date} className="mobile-day-card glass-panel">
-            <div className="mobile-day-header">
-              <Calendar size={16} className="text-blue-400" />
-              <h2 className="mobile-day-title">{dayGroup.dateLabel}</h2>
-              {isDuringConvention(effectiveDate) && dayGroup.date === effectiveDate && (
-                <span className="day-header-today-pill">Today</span>
-              )}
-            </div>
+      {showSimPanel && (
+        <div className="tl-sim">
+          <span className="tl-sim-label">가상 날짜 선택</span>
+          {SIMULATION_PRESETS.map(d => (
+            <button
+              key={d.key}
+              className={`sim-btn ${effectiveDate === d.key ? 'active' : ''}`}
+              onClick={() => {
+                setSimulatedDate(d.key);
+                setSelectedDay(getDefaultDayKey(d.key));
+              }}
+            >
+              {d.label}
+            </button>
+          ))}
+        </div>
+      )}
 
-            <div className="mobile-sessions-list">
-              {(() => {
-                const sessionElements = dayGroup.sessions.map((session, sIdx) => {
-                  const speakers = (session.speakerIds || []).map(id => speakersMap[id]).filter(Boolean);
-                  const hasPending = speakers.some(s => s.status === 'pending');
+      {/* Day tabs: [Today] -> [All Days] -> [next days...] -> [previous days] */}
+      <div className="day-tabs" role="tablist" aria-label="Convention day">
+        {orderedDayTabs.map(day => {
+          const [datePart, dayPart] = day.key === 'all'
+            ? ['Sep 14 – 18', 'All Days']
+            : day.label.split(' · ');
+          const isActive = selectedDay === day.key;
+          return (
+            <button
+              key={day.key}
+              role="tab"
+              aria-selected={isActive}
+              className={`day-tab ${isActive ? 'active' : ''} ${day.isToday ? 'is-today' : ''} ${day.isPast ? 'is-past' : ''}`}
+              onClick={() => setSelectedDay(day.key)}
+            >
+              <span className="day-tab-main">
+                {dayPart}
+                {day.isToday && <span className="tab-flag">Today</span>}
+                {day.isPast && <span className="tab-flag past">전날</span>}
+              </span>
+              <span className="day-tab-sub">{datePart}</span>
+            </button>
+          );
+        })}
+      </div>
 
-                  if (highlightPendingOnly && !hasPending) {
-                    return null;
-                  }
+      {/* Day-by-day agenda */}
+      <div className="tl-days">
+        {filteredDays.map(dayGroup => {
+          const daySpeakers = dayGroup.sessions
+            .flatMap(session => (session.speakerIds || []).map(id => speakersMap[id]))
+            .filter(Boolean);
+          const daySubmitted = daySpeakers.filter(s => s.status === 'submitted').length;
+          const [datePart, dayPart] = dayGroup.dateLabel.split(' · ');
+          const isToday = isDuringConvention(effectiveDate) && dayGroup.date === effectiveDate;
 
-                  return (
-                    <div key={sIdx} className="mobile-session-block">
-                      <div className="mobile-session-top">
-                        <span className="mobile-time-badge">{session.time}</span>
-                        <span className={`tt-session-banner ${getCategoryClass(session.category)}`}>
-                          {session.title}
-                        </span>
+          const items = dayGroup.sessions.map((session, sIdx) => {
+            const speakers = (session.speakerIds || []).map(id => speakersMap[id]).filter(Boolean);
+            const hasPending = speakers.some(s => s.status === 'pending');
+
+            if (highlightPendingOnly && !hasPending) {
+              return null;
+            }
+
+            const { start, end, duration } = parseTime(session.time);
+            const timeCell = (
+              <div className="tl-time">
+                <span>{start}</span>
+                {end && <span className="tl-time-end">{end}</span>}
+              </div>
+            );
+
+            if (session.isStatic) {
+              return (
+                <li key={sIdx} className={`tl-item is-static ${session.speakerName ? 'has-speaker' : ''}`}>
+                  {timeCell}
+                  <div className="tl-body">
+                    <div className="tl-static-title">{toTitleCase(session.title)}</div>
+                    {session.speakerName ? (
+                      <div className="tl-static-speaker">
+                        {session.speakerName}
+                        {session.affiliation && <span> · {session.affiliation}</span>}
                       </div>
+                    ) : session.details ? (
+                      <div className="tl-static-desc">{session.details}</div>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            }
 
-                      {session.isStatic ? (
-                        session.speakerName ? (
-                          <div className="mobile-speakers-col">
-                            <div className="mobile-speaker-card is-static-speaker">
-                              <div className="mobile-card-row-top">
-                                <span className="tt-role-pill role-lecturer">
-                                  {session.role || 'Preacher'}
-                                </span>
-                                <span className="tt-status-tag tag-general">
-                                  GENERAL SESSION
-                                </span>
-                              </div>
+            return (
+              <li key={sIdx} className={`tl-item is-target cat-${session.category}`}>
+                {timeCell}
+                <div className="tl-body">
+                  <div className="kicker">
+                    {CATEGORY_KICKER[session.category]}
+                    {duration && <span className="kicker-dur">· {duration}</span>}
+                  </div>
+                  <h3 className="tl-title">{getHeading(session.title)}</h3>
+                  <div className="spk-list">
+                    {speakers.map(speaker => {
+                      if (highlightPendingOnly && speaker.status === 'submitted') {
+                        return null;
+                      }
+                      return (
+                        <SpeakerCard
+                          key={speaker.id}
+                          speaker={speaker}
+                          onOpenEdit={onOpenEdit}
+                          onToggleStatus={onToggleStatus}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              </li>
+            );
+          }).filter(Boolean);
 
-                              <div className="mobile-speaker-name">
-                                {session.speakerName}
-                              </div>
+          return (
+            <section key={dayGroup.date} className="day">
+              <header className="day-head">
+                <div>
+                  <div className="day-eyebrow">
+                    {dayPart}
+                    {isToday && <span className="tab-flag">Today</span>}
+                  </div>
+                  <h2 className="day-title">{datePart}</h2>
+                </div>
+                {daySpeakers.length > 0 && (
+                  <div className="day-count">
+                    <strong>{daySubmitted}</strong> / {daySpeakers.length} submitted
+                  </div>
+                )}
+              </header>
 
-                              {session.affiliation && (
-                                <div className="mobile-speaker-affil">
-                                  {session.affiliation}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ) : session.details ? (
-                          <div className="mobile-static-desc">
-                            {session.details}
-                          </div>
-                        ) : null
-                      ) : (
-                        <div className="mobile-speakers-col">
-                          {speakers.map(speaker => {
-                            const isSubmitted = speaker.status === 'submitted';
-
-                            if (highlightPendingOnly && isSubmitted) {
-                              return null;
-                            }
-
-                            return (
-                              <div 
-                                key={speaker.id}
-                                className={`mobile-speaker-card ${isSubmitted ? 'is-submitted' : 'is-pending'}`}
-                                onClick={() => onOpenEdit(speaker)}
-                              >
-                                <div className="mobile-card-row-top">
-                                  <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
-                                    {speaker.role}
-                                  </span>
-                                  
-                                  <div className="mobile-status-and-action">
-                                    {/* Status badge: NOT RECEIVED vs SUBMITTED */}
-                                    <span className={`tt-status-tag ${isSubmitted ? 'tag-submitted' : 'tag-pending'}`}>
-                                      {isSubmitted ? (
-                                        <>
-                                          <CheckCircle2 size={9} />
-                                          <span>SUBMITTED</span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Clock size={9} />
-                                          <span>NOT RECEIVED</span>
-                                        </>
-                                      )}
-                                    </span>
-
-                                    {/* Action button: "Start" when pending, "Undo" when submitted */}
-                                    {isSubmitted ? (
-                                      <button
-                                        className="mobile-action-btn btn-undo"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onToggleStatus(speaker.id);
-                                        }}
-                                      >
-                                        Undo
-                                      </button>
-                                    ) : (
-                                      <button
-                                        className="mobile-action-btn btn-start"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onOpenEdit(speaker);
-                                        }}
-                                      >
-                                        <Play size={10} fill="currentColor" />
-                                        <span>Start</span>
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div className="mobile-speaker-name">
-                                  {speaker.speakerName}
-                                </div>
-
-                                {speaker.category === 'global_links' && speaker.affiliationOrCountry && (
-                                  <div className="mobile-speaker-affil">
-                                    {speaker.affiliationOrCountry}
-                                  </div>
-                                )}
-
-                                {/* Platform OS, File Types & Timestamp (When submitted) */}
-                                {isSubmitted && (
-                                  <div className="mobile-meta-badges">
-                                    {speaker.computerOS && (
-                                      <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
-                                        {speaker.computerOS}
-                                      </span>
-                                    )}
-                                    {speaker.fileTypes && speaker.fileTypes.map(ft => (
-                                      <span key={ft} className="tt-filetype-pill">
-                                        {ft}
-                                      </span>
-                                    ))}
-                                    {speaker.submittedAt && (
-                                      <span className="tt-timestamp-pill">
-                                        ✓ {speaker.submittedAt}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                });
-
-                const validSessions = sessionElements.filter(Boolean);
-                if (validSessions.length === 0) {
-                  return (
-                    <div className="mobile-empty-day-note">
-                      <span>{dayGroup.date === '2026-09-14' 
-                        ? 'ℹ️ Day 1 is Opening & Registration Day. No report submissions required.' 
-                        : '✓ No pending submissions found for this day.'}</span>
-                    </div>
-                  );
-                }
-                return validSessions;
-              })()}
-            </div>
-          </div>
-        ))}
+              {items.length === 0 ? (
+                <div className="empty-note">
+                  {dayGroup.date === '2026-09-14'
+                    ? 'Day 1 is Opening & Registration Day. No report submissions required.'
+                    : 'No pending submissions for this day.'}
+                </div>
+              ) : (
+                <ol className="tl-list">{items}</ol>
+              )}
+            </section>
+          );
+        })}
       </div>
     </div>
   );
