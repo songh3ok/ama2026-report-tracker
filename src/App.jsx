@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { INITIAL_SPEAKERS, CONVENTION_INFO } from './data/speakersData';
-import { Header } from './components/Header';
-import { StatsOverview } from './components/StatsOverview';
-import { FilterToolbar } from './components/FilterToolbar';
-import { SpeakerCard } from './components/SpeakerCard';
-import { SpeakerTable } from './components/SpeakerTable';
-import { EditModal } from './components/EditModal';
-import { ReminderModal } from './components/ReminderModal';
-import { CheckCircle, AlertCircle } from 'lucide-react';
+import { TimetableGrid } from './components/TimetableGrid';
+import { DetailModal } from './components/DetailModal';
+import { 
+  FileSpreadsheet, 
+  RefreshCw, 
+  Sun, 
+  Moon, 
+  Search, 
+  AlertCircle, 
+  CheckCircle2, 
+  Clock,
+  Eye,
+  Calendar
+} from 'lucide-react';
 
-const STORAGE_KEY = 'ama2026_speakers_v1';
+const STORAGE_KEY = 'ama2026_timetable_v2';
 const THEME_KEY = 'ama2026_theme';
 
 export function App() {
-  // Theme state
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem(THEME_KEY) || 'dark';
   });
 
-  // Speakers database state
   const [speakers, setSpeakers] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -30,298 +34,209 @@ export function App() {
         }
       }
     } catch (e) {
-      console.error('Failed to load local storage data:', e);
+      console.error('Local storage load error:', e);
     }
     return INITIAL_SPEAKERS;
   });
 
-  // Filters & Search
+  const [highlightPendingOnly, setHighlightPendingOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedDate, setSelectedDate] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [viewMode, setViewMode] = useState('grid');
+  const [selectedSpeaker, setSelectedSpeaker] = useState(null);
+  const [toastMsg, setToastMsg] = useState(null);
 
-  // Modals
-  const [editingSpeaker, setEditingSpeaker] = useState(null);
-  const [reminderSpeaker, setReminderSpeaker] = useState(null);
-  const [toastMessage, setToastMessage] = useState(null);
-
-  // Sync theme attribute to document
+  // Sync theme
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
-  // Sync speakers to localStorage
+  // Sync state to local storage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(speakers));
   }, [speakers]);
 
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3000);
+  const showToast = (text) => {
+    setToastMsg(text);
+    setTimeout(() => setToastMsg(null), 2500);
   };
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  // Convert array to map for instant lookup by ID in the timetable
+  const speakersMap = React.useMemo(() => {
+    const map = {};
+    speakers.forEach(s => {
+      map[s.id] = s;
+    });
+    return map;
+  }, [speakers]);
 
-  // Quick 1-click status toggle
-  const handleQuickToggleStatus = (id) => {
+  // Quick 1-click status toggle directly from timetable
+  const handleToggleStatus = (id) => {
     setSpeakers(prev => prev.map(item => {
       if (item.id === id) {
         const isNowSubmitted = item.status !== 'submitted';
         const now = new Date();
-        const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         
         const newStatus = isNowSubmitted ? 'submitted' : 'pending';
         showToast(
           isNowSubmitted 
-            ? `✓ ${item.speakerName} 님 [제출 완료] 처리되었습니다.` 
-            : `ℹ ${item.speakerName} 님 [미제출]로 전환되었습니다.`
+            ? `✓ ${item.speakerName} [제출 완료] (${formatted})` 
+            : `ℹ ${item.speakerName} [미제출]로 변경되었습니다.`
         );
 
         return {
           ...item,
           status: newStatus,
-          submittedAt: isNowSubmitted ? (item.submittedAt || formattedDate) : null
+          submittedAt: isNowSubmitted ? (item.submittedAt || formatted) : ''
         };
       }
       return item;
     }));
   };
 
-  // Save detailed edits from modal
-  const handleSaveEdit = (id, updatedFields) => {
-    setSpeakers(prev => prev.map(item => {
-      if (item.id === id) {
-        return { ...item, ...updatedFields };
-      }
-      return item;
-    }));
+  // Save changes from modal
+  const handleSaveModal = (id, formData) => {
+    setSpeakers(prev => prev.map(s => (s.id === id ? { ...s, ...formData } : s)));
     showToast('저장되었습니다.');
   };
 
-  // Export to Excel-compatible CSV (with UTF-8 BOM)
+  // Export CSV
   const handleExportCSV = () => {
-    const headers = [
-      'ID', '구분', '세션 주제', '역할', '강사/발표자명', 
-      '소속/국가', '일자', '시간', '제출상태', '원고/자료제목', 
-      '접수일시', '자료링크', '연락처', '비고'
-    ];
-
+    const headers = ['구분', '세션 주제', '역할', '강사명', '소속/국가', '일자', '시간', '제출상태', '제출일시', '원고제목', '자료링크'];
     const rows = speakers.map(s => [
-      s.id,
-      `"${s.categoryLabel.replace(/"/g, '""')}"`,
-      `"${s.sessionTitle.replace(/"/g, '""')}"`,
-      `"${s.role.replace(/"/g, '""')}"`,
-      `"${s.speakerName.replace(/"/g, '""')}"`,
-      `"${s.affiliationOrCountry.replace(/"/g, '""')}"`,
+      `"${s.categoryLabel}"`,
+      `"${s.sessionTitle}"`,
+      `"${s.role}"`,
+      `"${s.speakerName}"`,
+      `"${s.affiliationOrCountry}"`,
       `"${s.dateLabel}"`,
       `"${s.time}"`,
-      `"${s.status === 'submitted' ? '제출완료' : s.status === 'pending' ? '미제출' : s.status === 'reviewing' ? '검토중' : '수정요청'}"`,
-      `"${(s.documentTitle || '').replace(/"/g, '""')}"`,
+      `"${s.status === 'submitted' ? '제출완료' : '미제출'}"`,
       `"${s.submittedAt || ''}"`,
-      `"${(s.documentUrl || '').replace(/"/g, '""')}"`,
-      `"${(s.contactEmail || '').replace(/"/g, '""')}"`,
-      `"${(s.notes || '').replace(/"/g, '""')}"`
+      `"${(s.documentTitle || '').replace(/"/g, '""')}"`,
+      `"${(s.documentUrl || '').replace(/"/g, '""')}"`
     ]);
 
-    const csvContent = '\uFEFF' + [
-      headers.join(','),
-      ...rows.map(r => r.join(','))
-    ].join('\r\n');
-
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `AMA2026_발표자료_접수현황_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
+    link.href = url;
+    link.download = `AMA2026_발표자료_접수현황_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
-    document.body.removeChild(link);
-    showToast('CSV 파일이 다운로드되었습니다.');
+    showToast('CSV 다운로드가 완료되었습니다.');
   };
 
-  // Export JSON backup
-  const handleExportJSON = () => {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(speakers, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `ama2026_speakers_backup_${new Date().toISOString().slice(0, 10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    showToast('JSON 백업 파일이 다운로드되었습니다.');
-  };
-
-  // Import JSON backup
-  const handleImportJSON = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const imported = JSON.parse(event.target.result);
-        if (Array.isArray(imported) && imported.length > 0) {
-          setSpeakers(imported);
-          showToast(`총 ${imported.length}건의 데이터를 성공적으로 복원했습니다.`);
-        } else {
-          alert('올바른 JSON 데이터 형식이 아닙니다.');
-        }
-      } catch (err) {
-        alert('파일을 읽는 중 오류가 발생했습니다: ' + err.message);
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
-
-  // Reset to initial 24 speakers
-  const handleResetData = () => {
-    if (window.confirm('모든 변경사항을 초기화하고 기본 24명 데이터로 되돌리시겠습니까?')) {
+  // Reset to default
+  const handleReset = () => {
+    if (window.confirm('기본 데이터로 초기화하시겠습니까?')) {
       setSpeakers(INITIAL_SPEAKERS);
-      showToast('기본 데이터로 초기화되었습니다.');
+      showToast('초기화되었습니다.');
     }
   };
 
-  // Filter logic
-  const filteredSpeakers = speakers.filter(item => {
-    // Search query matching
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      const matchName = item.speakerName.toLowerCase().includes(q);
-      const matchSession = item.sessionTitle.toLowerCase().includes(q);
-      const matchAffiliation = item.affiliationOrCountry.toLowerCase().includes(q);
-      const matchRole = item.role.toLowerCase().includes(q);
-      if (!matchName && !matchSession && !matchAffiliation && !matchRole) {
-        return false;
-      }
-    }
-
-    // Category filter
-    if (selectedCategory !== 'all' && item.category !== selectedCategory) {
-      return false;
-    }
-
-    // Date filter
-    if (selectedDate !== 'all' && item.date !== selectedDate) {
-      return false;
-    }
-
-    // Status filter
-    if (selectedStatus !== 'all') {
-      if (selectedStatus === 'reviewing') {
-        if (item.status !== 'reviewing' && item.status !== 'revision') return false;
-      } else if (item.status !== selectedStatus) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-
-  const pendingCount = speakers.filter(s => s.status === 'pending').length;
+  // Calculations
+  const totalCount = speakers.length;
+  const submittedCount = speakers.filter(s => s.status === 'submitted').length;
+  const pendingCount = totalCount - submittedCount;
+  const percent = Math.round((submittedCount / totalCount) * 100);
 
   return (
-    <div className="app-wrapper">
+    <div className="simple-app-wrapper">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="toast-notice">
-          <CheckCircle size={17} />
-          <span>{toastMessage}</span>
+      {toastMsg && (
+        <div className="simple-toast animate-fade-in">
+          <CheckCircle2 size={16} />
+          <span>{toastMsg}</span>
         </div>
       )}
 
-      {/* Header */}
-      <Header
-        theme={theme}
-        toggleTheme={toggleTheme}
-        onExportCSV={handleExportCSV}
-        onExportJSON={handleExportJSON}
-        onImportJSON={handleImportJSON}
-        onResetData={handleResetData}
-      />
+      {/* Top Convention Header */}
+      <header className="simple-header glass-panel">
+        <div className="header-info">
+          <div className="convention-badge">
+            <Calendar size={13} />
+            <span>The 15th AMA Triennial Convention, Incheon 2026</span>
+          </div>
+          <h1 className="header-heading">발표자료 실시간 접수 모니터링 일정표</h1>
+          <p className="header-subheading">
+            {CONVENTION_INFO.theme} · 2026. 9. 14(월) ~ 9. 18(금)
+          </p>
+        </div>
 
-      {/* Stats KPI Overview */}
-      <StatsOverview speakers={speakers} />
-
-      {/* Filter and Search Bar */}
-      <FilterToolbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        selectedStatus={selectedStatus}
-        setSelectedStatus={setSelectedStatus}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        pendingCount={pendingCount}
-      />
-
-      {/* Main Speakers List: Grid or Table */}
-      {filteredSpeakers.length === 0 ? (
-        <div className="empty-state-panel glass-panel">
-          <div className="empty-icon">🔍</div>
-          <h3>조건에 맞는 발표자를 찾을 수 없습니다.</h3>
-          <p>검색어나 선택된 필터 조건을 확인해 주세요.</p>
+        <div className="header-buttons">
           <button 
-            className="empty-btn"
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedCategory('all');
-              setSelectedDate('all');
-              setSelectedStatus('all');
-            }}
+            className="btn-simple" 
+            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+            title="테마 전환"
           >
-            모든 필터 초기화
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            <span>{theme === 'dark' ? '라이트' : '다크'}</span>
+          </button>
+          <button className="btn-simple" onClick={handleExportCSV} title="Excel CSV 다운로드">
+            <FileSpreadsheet size={15} className="text-emerald-400" />
+            <span>CSV 저장</span>
+          </button>
+          <button className="btn-simple btn-muted" onClick={handleReset} title="초기화">
+            <RefreshCw size={14} />
           </button>
         </div>
-      ) : viewMode === 'grid' ? (
-        <div className="cards-grid-layout">
-          {filteredSpeakers.map(speaker => (
-            <SpeakerCard
-              key={speaker.id}
-              speaker={speaker}
-              onQuickToggleStatus={handleQuickToggleStatus}
-              onOpenEditModal={setEditingSpeaker}
-              onOpenReminderModal={setReminderSpeaker}
-            />
-          ))}
-        </div>
-      ) : (
-        <SpeakerTable
-          speakers={filteredSpeakers}
-          onQuickToggleStatus={handleQuickToggleStatus}
-          onOpenEditModal={setEditingSpeaker}
-          onOpenReminderModal={setReminderSpeaker}
-        />
-      )}
+      </header>
 
-      {/* Modals */}
-      <EditModal
-        speaker={editingSpeaker}
-        isOpen={Boolean(editingSpeaker)}
-        onClose={() => setEditingSpeaker(null)}
-        onSave={handleSaveEdit}
+      {/* Summary KPI & Action Bar */}
+      <div className="summary-strip glass-panel">
+        <div className="kpi-group">
+          <div className="kpi-pill kpi-total">
+            <span className="kpi-label">전체 대상</span>
+            <strong className="kpi-val">{totalCount}명</strong>
+          </div>
+          <div className="kpi-pill kpi-submitted">
+            <CheckCircle2 size={15} className="text-emerald-400" />
+            <span className="kpi-label">제출 완료</span>
+            <strong className="kpi-val text-emerald-400">{submittedCount}명</strong>
+            <span className="kpi-badge">({percent}%)</span>
+          </div>
+          <div className="kpi-pill kpi-pending">
+            <Clock size={15} className="text-rose-400" />
+            <span className="kpi-label">미제출</span>
+            <strong className="kpi-val text-rose-400">{pendingCount}명</strong>
+          </div>
+        </div>
+
+        <div className="filter-controls">
+          <button 
+            className={`toggle-filter-btn ${highlightPendingOnly ? 'active' : ''}`}
+            onClick={() => setHighlightPendingOnly(prev => !prev)}
+          >
+            <Eye size={14} />
+            <span>{highlightPendingOnly ? '전체 보기' : '🔴 미제출자만 강조'}</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="table-guide-notice">
+        <span>💡 <strong>이용 안내:</strong> 일정표 각 칸의 강사 박스에서 <strong>[제출/미제출]</strong> 버튼을 누르면 즉시 상태가 바뀌고 날짜와 시간이 자동 저장됩니다. 박스를 클릭하면 세부 링크나 원고 제목을 입력할 수 있습니다.</span>
+      </div>
+
+      {/* Program Timetable Grid */}
+      <TimetableGrid
+        speakersMap={speakersMap}
+        onToggleStatus={handleToggleStatus}
+        onOpenEdit={(spk) => setSelectedSpeaker(spk)}
+        highlightPendingOnly={highlightPendingOnly}
       />
 
-      <ReminderModal
-        speaker={reminderSpeaker}
-        isOpen={Boolean(reminderSpeaker)}
-        onClose={() => setReminderSpeaker(null)}
+      {/* Detail Edit Modal */}
+      <DetailModal
+        speaker={selectedSpeaker}
+        isOpen={Boolean(selectedSpeaker)}
+        onClose={() => setSelectedSpeaker(null)}
+        onSave={handleSaveModal}
       />
 
       {/* Footer */}
-      <footer className="app-footer">
+      <footer className="simple-footer">
         <p>The 15th AMA Triennial Convention Incheon 2026 Organizing Committee</p>
-        <p>Asia Missions Association (AMA) · 실시간 발표자료 접수 현황 모니터링 시스템</p>
       </footer>
     </div>
   );
