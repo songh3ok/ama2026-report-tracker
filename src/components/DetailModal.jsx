@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, CheckCircle2, Clock, Link as LinkIcon, FileText } from 'lucide-react';
+import { X, Save, CheckCircle2, Clock, Laptop, FileCheck, Check } from 'lucide-react';
+
+const OS_OPTIONS = ['Windows', 'Mac'];
+const FILE_TYPE_OPTIONS = ['PPT', 'Keynote', 'PDF', 'DOCX', 'Image', 'MP4', 'MP3', 'Other'];
 
 export function DetailModal({ speaker, isOpen, onClose, onSave }) {
   if (!isOpen || !speaker) return null;
 
   const [formData, setFormData] = useState({
     status: 'pending',
-    documentTitle: '',
-    documentUrl: '',
+    computerOS: '',
+    fileTypes: [],
     submittedAt: '',
     notes: ''
   });
@@ -16,8 +19,8 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
     if (speaker) {
       setFormData({
         status: speaker.status || 'pending',
-        documentTitle: speaker.documentTitle || '',
-        documentUrl: speaker.documentUrl || '',
+        computerOS: speaker.computerOS || '',
+        fileTypes: Array.isArray(speaker.fileTypes) ? speaker.fileTypes : [],
         submittedAt: speaker.submittedAt || '',
         notes: speaker.notes || ''
       });
@@ -34,6 +37,23 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
       status: isNowSubmitted ? 'submitted' : 'pending',
       submittedAt: isNowSubmitted ? (prev.submittedAt || formatted) : ''
     }));
+  };
+
+  const handleToggleOS = (os) => {
+    setFormData(prev => ({
+      ...prev,
+      computerOS: prev.computerOS === os ? '' : os
+    }));
+  };
+
+  const handleToggleFileType = (type) => {
+    setFormData(prev => {
+      const exists = prev.fileTypes.includes(type);
+      const updated = exists 
+        ? prev.fileTypes.filter(t => t !== type)
+        : [...prev.fileTypes, type];
+      return { ...prev, fileTypes: updated };
+    });
   };
 
   const handleSubmit = (e) => {
@@ -90,43 +110,61 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
             />
           </div>
 
-          {/* Document Title */}
+          {/* Computer Platform (Windows / Mac) */}
           <div className="form-group">
             <label className="form-label">
-              <FileText size={14} />
-              <span>Paper / Presentation Title</span>
+              <Laptop size={14} />
+              <span>Computer Platform</span>
             </label>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="Enter presentation or paper title..."
-              value={formData.documentTitle}
-              onChange={(e) => setFormData({ ...formData, documentTitle: e.target.value })}
-            />
+            <div className="os-selector-grid">
+              {OS_OPTIONS.map(os => {
+                const isSelected = formData.computerOS === os;
+                return (
+                  <button
+                    key={os}
+                    type="button"
+                    className={`os-btn ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handleToggleOS(os)}
+                  >
+                    {isSelected && <Check size={14} className="text-blue-400" />}
+                    <span>{os}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Document URL */}
+          {/* File Types (PPT, Keynote, PDF, DOCX, Image, MP4, MP3, Other) */}
           <div className="form-group">
             <label className="form-label">
-              <LinkIcon size={14} />
-              <span>Material Link (Google Drive / OneDrive / Dropbox)</span>
+              <FileCheck size={14} />
+              <span>Material Format Type</span>
             </label>
-            <input
-              type="url"
-              className="form-input"
-              placeholder="https://drive.google.com/..."
-              value={formData.documentUrl}
-              onChange={(e) => setFormData({ ...formData, documentUrl: e.target.value })}
-            />
+            <div className="file-types-chips-grid">
+              {FILE_TYPE_OPTIONS.map(type => {
+                const isSelected = formData.fileTypes.includes(type);
+                return (
+                  <button
+                    key={type}
+                    type="button"
+                    className={`file-type-chip ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handleToggleFileType(type)}
+                  >
+                    {isSelected && <Check size={12} />}
+                    <span>{type}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Notes */}
           <div className="form-group">
-            <label className="form-label">Notes</label>
+            <label className="form-label">Notes / Remarks</label>
             <input
               type="text"
               className="form-input"
-              placeholder="Additional notes or memos..."
+              placeholder="Additional details..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             />

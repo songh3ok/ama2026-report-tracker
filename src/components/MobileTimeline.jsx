@@ -262,6 +262,22 @@ export function MobileTimeline({
                               {speaker.affiliationOrCountry}
                             </div>
 
+                            {/* Platform OS and File Types Display */}
+                            {(speaker.computerOS || (speaker.fileTypes && speaker.fileTypes.length > 0)) && (
+                              <div className="mobile-meta-badges">
+                                {speaker.computerOS && (
+                                  <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
+                                    {speaker.computerOS}
+                                  </span>
+                                )}
+                                {speaker.fileTypes && speaker.fileTypes.map(ft => (
+                                  <span key={ft} className="tt-filetype-pill">
+                                    {ft}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
                             <div className="mobile-card-footer">
                               <div className="mobile-time-record">
                                 {isSubmitted ? (
@@ -276,18 +292,6 @@ export function MobileTimeline({
                               </div>
 
                               <div className="mobile-card-actions">
-                                {speaker.documentUrl && (
-                                  <a 
-                                    href={speaker.documentUrl} 
-                                    target="_blank" 
-                                    rel="noreferrer"
-                                    className="mobile-link-badge"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <ExternalLink size={12} />
-                                    Link
-                                  </a>
-                                )}
                                 <button 
                                   className="mobile-edit-badge"
                                   onClick={(e) => {
@@ -296,7 +300,7 @@ export function MobileTimeline({
                                   }}
                                 >
                                   <Edit2 size={12} />
-                                  Details
+                                  Format & Details
                                 </button>
                               </div>
                             </div>

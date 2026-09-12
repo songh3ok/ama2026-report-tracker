@@ -112,7 +112,7 @@ export function App() {
 
   // Export CSV
   const handleExportCSV = () => {
-    const headers = ['Category', 'Session Topic', 'Role', 'Speaker Name', 'Affiliation / Country', 'Date', 'Time', 'Status', 'Received Timestamp', 'Document Title', 'Material Link'];
+    const headers = ['Category', 'Session Topic', 'Role', 'Speaker Name', 'Affiliation / Country', 'Date', 'Time', 'Status', 'Received Timestamp', 'Computer Platform', 'Material Formats', 'Notes'];
     const rows = speakers.map(s => [
       `"${s.categoryLabel}"`,
       `"${s.sessionTitle}"`,
@@ -123,8 +123,9 @@ export function App() {
       `"${s.time}"`,
       `"${s.status === 'submitted' ? 'Submitted' : 'Pending'}"`,
       `"${s.submittedAt || ''}"`,
-      `"${(s.documentTitle || '').replace(/"/g, '""')}"`,
-      `"${(s.documentUrl || '').replace(/"/g, '""')}"`
+      `"${s.computerOS || ''}"`,
+      `"${(s.fileTypes || []).join(', ')}"`,
+      `"${(s.notes || '').replace(/"/g, '""')}"`
     ]);
 
     const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
@@ -245,7 +246,7 @@ export function App() {
       </div>
 
       <div className="table-guide-notice">
-        <span>💡 <strong>Real-time Guide:</strong> Click <strong>[Submit]</strong> on any speaker card to record submission status with date & time. Click the card body to add material links or edit titles.</span>
+        <span>💡 <strong>Real-time Guide:</strong> Click <strong>[Submit]</strong> on any speaker card to record submission status with date & time. Click a card to select computer platform (Windows / Mac) and material format (PPT, Keynote, PDF, etc.).</span>
       </div>
 
       {/* Main Content: Mobile Timeline or PDF Grid */}

@@ -65,6 +65,22 @@ export function TimetableGrid({
           </div>
         )}
 
+        {/* Platform OS and File Types Display */}
+        {(speaker.computerOS || (speaker.fileTypes && speaker.fileTypes.length > 0)) && (
+          <div className="tt-meta-badge-row" onClick={() => onOpenEdit(speaker)}>
+            {speaker.computerOS && (
+              <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
+                {speaker.computerOS}
+              </span>
+            )}
+            {speaker.fileTypes && speaker.fileTypes.map(ft => (
+              <span key={ft} className="tt-filetype-pill">
+                {ft}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Date & Time Record */}
         <div className="tt-timestamp-row" onClick={() => onOpenEdit(speaker)}>
           {isSubmitted ? (
@@ -77,25 +93,13 @@ export function TimetableGrid({
             </span>
           )}
           <div className="tt-mini-actions">
-            {speaker.documentUrl && (
-              <a 
-                href={speaker.documentUrl} 
-                target="_blank" 
-                rel="noreferrer" 
-                className="tt-link-icon"
-                onClick={(e) => e.stopPropagation()}
-                title="Open submitted document"
-              >
-                <ExternalLink size={12} />
-              </a>
-            )}
             <button 
               className="tt-edit-mini-btn"
               onClick={(e) => {
                 e.stopPropagation();
                 onOpenEdit(speaker);
               }}
-              title="Edit details & links"
+              title="Edit OS & file formats"
             >
               <Edit2 size={11} />
             </button>
