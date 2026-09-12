@@ -42,10 +42,16 @@ export function MobileTimeline({
           speakerIds: ['plenary-2-speaker', 'plenary-2-respondent']
         },
         {
-          time: '13:40 - 14:10',
+          time: '13:40 - 13:55 (15m)',
           category: 'global',
-          title: 'GLOBAL LINKS REPORTS',
-          speakerIds: ['global-1', 'global-2']
+          title: 'GLOBAL LINKS: Lausanne Movement',
+          speakerIds: ['global-1']
+        },
+        {
+          time: '13:55 - 14:10 (15m)',
+          category: 'global',
+          title: 'GLOBAL LINKS: MANI',
+          speakerIds: ['global-2']
         },
         {
           time: '18:30 - 20:50',
@@ -78,10 +84,16 @@ export function MobileTimeline({
           speakerIds: ['plenary-4-speaker', 'plenary-4-respondent']
         },
         {
-          time: '13:40 - 14:10',
+          time: '13:40 - 13:55 (15m)',
           category: 'global',
-          title: 'GLOBAL LINKS REPORTS',
-          speakerIds: ['global-3', 'global-4']
+          title: 'GLOBAL LINKS: WEA-MC',
+          speakerIds: ['global-3']
+        },
+        {
+          time: '13:55 - 14:10 (15m)',
+          category: 'global',
+          title: 'GLOBAL LINKS: COMIBAM',
+          speakerIds: ['global-4']
         }
       ]
     },
@@ -108,10 +120,16 @@ export function MobileTimeline({
           speakerIds: ['plenary-6-speaker', 'plenary-6-respondent']
         },
         {
-          time: '13:40 - 14:10',
+          time: '13:40 - 13:55 (15m)',
           category: 'global',
-          title: 'GLOBAL LINKS REPORTS',
-          speakerIds: ['global-5', 'global-6']
+          title: 'GLOBAL LINKS: Frontier Ventures',
+          speakerIds: ['global-5']
+        },
+        {
+          time: '13:55 - 14:10 (15m)',
+          category: 'global',
+          title: 'GLOBAL LINKS: Missio Nexus',
+          speakerIds: ['global-6']
         },
         {
           time: '18:30 - 20:50',

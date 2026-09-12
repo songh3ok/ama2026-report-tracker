@@ -275,46 +275,46 @@ export function TimetableGrid({
               </td>
             </tr>
 
-            {/* PM 1:40-2:10: GLOBAL LINKS REPORTS */}
-            <tr className="tt-row-target-highlight">
-              <td className="cell-time highlight-time">1:40-2:10</td>
-              <td className="cell-min">30</td>
-              <td className="cell-muted">
+            {/* PM 1:40-2:10: GLOBAL LINKS REPORTS (SPLIT INTO TWO 15-MIN ROWS) */}
+            <tr className="tt-row-banner-only">
+              <td rowSpan={3} className="cell-time highlight-time">1:40-2:10</td>
+              <td className="cell-min text-xs font-bold text-muted-foreground">-</td>
+              <td rowSpan={3} className="cell-muted">
                 <div className="static-sub">-</div>
               </td>
-              {/* Tue: Lausanne & MANI */}
-              <td className="cell-target">
-                <div className="tt-session-banner banner-global">
-                  GLOBAL LINKS REPORTS
-                </div>
-                <div className="tt-speakers-pair">
-                  {renderSpeakerBox("global-1")}
-                  {renderSpeakerBox("global-2")}
-                </div>
+              <td colSpan={3} className="cell-global-header">
+                GLOBAL LINKS REPORTS
               </td>
-              {/* Wed: WEA-MC & COMIBAM */}
-              <td className="cell-target">
-                <div className="tt-session-banner banner-global">
-                  GLOBAL LINKS REPORTS
-                </div>
-                <div className="tt-speakers-pair">
-                  {renderSpeakerBox("global-3")}
-                  {renderSpeakerBox("global-4")}
-                </div>
-              </td>
-              {/* Thu: Frontier & Missio Nexus */}
-              <td className="cell-target">
-                <div className="tt-session-banner banner-global">
-                  GLOBAL LINKS REPORTS
-                </div>
-                <div className="tt-speakers-pair">
-                  {renderSpeakerBox("global-5")}
-                  {renderSpeakerBox("global-6")}
-                </div>
-              </td>
-              {/* Fri: Departure */}
-              <td className="cell-static">
+              <td rowSpan={3} className="cell-static">
                 <div className="static-sub">DEPARTURE</div>
+              </td>
+            </tr>
+
+            {/* 1st 15 Min: 1:40 - 1:55 */}
+            <tr className="tt-row-target-highlight">
+              <td className="cell-min highlight-min">15</td>
+              <td className="cell-target">
+                {renderSpeakerBox("global-1")}
+              </td>
+              <td className="cell-target">
+                {renderSpeakerBox("global-3")}
+              </td>
+              <td className="cell-target">
+                {renderSpeakerBox("global-5")}
+              </td>
+            </tr>
+
+            {/* 2nd 15 Min: 1:55 - 2:10 */}
+            <tr className="tt-row-target-highlight">
+              <td className="cell-min highlight-min">15</td>
+              <td className="cell-target">
+                {renderSpeakerBox("global-2")}
+              </td>
+              <td className="cell-target">
+                {renderSpeakerBox("global-4")}
+              </td>
+              <td className="cell-target">
+                {renderSpeakerBox("global-6")}
               </td>
             </tr>
 
