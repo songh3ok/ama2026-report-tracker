@@ -172,8 +172,9 @@ export function TimetableGrid({
               <td className="cell-min">50</td>
               {/* Tue: AI */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: AI
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">AI</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-1-speaker")}
@@ -182,8 +183,9 @@ export function TimetableGrid({
               </td>
               {/* Wed: Religious Pluralism */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: Religious Pluralism
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">Religious Pluralism</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-3-speaker")}
@@ -192,8 +194,9 @@ export function TimetableGrid({
               </td>
               {/* Thu: Healing */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: Healing
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">Healing</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-5-speaker")}
@@ -202,8 +205,9 @@ export function TimetableGrid({
               </td>
               {/* Fri: The Next Generation */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: The Next Generation
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">The Next Generation</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-7-speaker")}
@@ -227,8 +231,9 @@ export function TimetableGrid({
               <td className="cell-min">50</td>
               {/* Tue: Diaspora */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: Diaspora
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">Diaspora</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-2-speaker")}
@@ -237,8 +242,9 @@ export function TimetableGrid({
               </td>
               {/* Wed: Justice */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: Justice
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">Justice</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-4-speaker")}
@@ -247,8 +253,9 @@ export function TimetableGrid({
               </td>
               {/* Thu: The Created World */}
               <td className="cell-target">
-                <div className="tt-session-banner banner-plenary">
-                  PLENARY: The Created World
+                <div className="tt-plenary-header">
+                  <span className="plenary-sub-tag">PLENARY SESSION</span>
+                  <h4 className="plenary-main-topic">The Created World</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("plenary-6-speaker")}
@@ -401,8 +408,9 @@ export function TimetableGrid({
                 <div className="evening-sub-block">
                   <div className="static-sub-mini">PRAISE & WORSHIP / SPECIAL PERFORMANCES</div>
                 </div>
-                <div className="tt-session-banner banner-national">
-                  NATIONAL REPORTS
+                <div className="tt-national-header">
+                  <span className="national-sub-tag">EVENING SESSION</span>
+                  <h4 className="national-main-topic">NATIONAL REPORTS</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("national-1")}
@@ -421,8 +429,9 @@ export function TimetableGrid({
                 <div className="evening-sub-block">
                   <div className="static-sub-mini">PRAISE & WORSHIP / SPECIAL PERFORMANCES</div>
                 </div>
-                <div className="tt-session-banner banner-national">
-                  NATIONAL REPORTS
+                <div className="tt-national-header">
+                  <span className="national-sub-tag">EVENING SESSION</span>
+                  <h4 className="national-main-topic">NATIONAL REPORTS</h4>
                 </div>
                 <div className="tt-speakers-pair">
                   {renderSpeakerBox("national-3")}
