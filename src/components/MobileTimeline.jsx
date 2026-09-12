@@ -892,7 +892,7 @@ export function MobileTimeline({
                                   {speaker.speakerName}
                                 </div>
 
-                                {speaker.role === 'Reporter' && speaker.affiliationOrCountry && (
+                                {speaker.category === 'global_links' && speaker.affiliationOrCountry && (
                                   <div className="mobile-speaker-affil">
                                     {speaker.affiliationOrCountry}
                                   </div>

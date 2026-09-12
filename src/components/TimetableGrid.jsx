@@ -75,7 +75,7 @@ export function TimetableGrid({
           {speaker.speakerName}
         </div>
 
-        {speaker.role === 'Reporter' && speaker.affiliationOrCountry && (
+        {speaker.category === 'global_links' && speaker.affiliationOrCountry && (
           <div className="tt-affiliation">
             {speaker.affiliationOrCountry}
           </div>
