@@ -19,6 +19,8 @@ export function TimetableGrid({
       <div 
         key={speaker.id}
         className={`tt-speaker-item ${isSubmitted ? 'is-submitted' : 'is-pending'} ${isDimmed ? 'dimmed' : ''}`}
+        onClick={() => onOpenEdit(speaker)}
+        title={isSubmitted ? "Click anywhere to view/edit submission" : "Click anywhere on this card to start questionnaire and submit"}
       >
         <div className="tt-speaker-header">
           <span className={`tt-role-pill ${speaker.role === 'Lecturer' ? 'role-lecturer' : speaker.role === 'Respondent' ? 'role-respondent' : speaker.role === 'Expositor' ? 'role-expositor' : 'role-reporter'}`}>
@@ -69,7 +71,7 @@ export function TimetableGrid({
           </div>
         </div>
 
-        <div className="tt-speaker-name" onClick={() => onOpenEdit(speaker)}>
+        <div className="tt-speaker-name">
           {speaker.speakerName}
         </div>
 
@@ -81,7 +83,7 @@ export function TimetableGrid({
 
         {/* Platform OS and File Types Display */}
         {(speaker.computerOS || (speaker.fileTypes && speaker.fileTypes.length > 0)) && (
-          <div className="tt-meta-badge-row" onClick={() => onOpenEdit(speaker)}>
+          <div className="tt-meta-badge-row">
             {speaker.computerOS && (
               <span className={`tt-os-pill ${speaker.computerOS.toLowerCase()}`}>
                 {speaker.computerOS}
@@ -96,7 +98,7 @@ export function TimetableGrid({
         )}
 
         {/* Date & Time Record */}
-        <div className="tt-timestamp-row" onClick={() => onOpenEdit(speaker)}>
+        <div className="tt-timestamp-row">
           {isSubmitted ? (
             <span className="timestamp-submitted text-emerald-400">
               ✓ {speaker.submittedAt || 'Received'}

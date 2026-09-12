@@ -807,6 +807,10 @@
   transform: translateY(-1px);
 }
 
+.tt-speaker-item:active {
+  transform: scale(0.985);
+}
+
 /* Submitted Style: Green */
 .tt-speaker-item.is-submitted {
   background: rgba(16, 185, 129, 0.15);
