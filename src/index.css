@@ -32,6 +32,14 @@
   --cat-global: #b894f2;
   --cat-national: #ec9a7c;
 
+  /* Submission tags: computer platform vs material format */
+  --tag-os: #7cb4ff;
+  --tag-os-bg: rgba(124, 180, 255, 0.14);
+  --tag-os-line: rgba(124, 180, 255, 0.42);
+  --tag-file: #c9a0ff;
+  --tag-file-bg: rgba(201, 160, 255, 0.14);
+  --tag-file-line: rgba(201, 160, 255, 0.42);
+
   --radius-sm: 6px;
   --radius: 10px;
   --radius-lg: 14px;
@@ -69,6 +77,13 @@
   --cat-biblical: #1c8ab3;
   --cat-global: #7a4fc9;
   --cat-national: #c05d38;
+
+  --tag-os: #1f63c9;
+  --tag-os-bg: rgba(31, 99, 201, 0.09);
+  --tag-os-line: rgba(31, 99, 201, 0.32);
+  --tag-file: #7a3fc4;
+  --tag-file-bg: rgba(122, 63, 196, 0.09);
+  --tag-file-line: rgba(122, 63, 196, 0.32);
 
   --shadow-pop: 0 24px 60px -16px rgba(20, 20, 30, 0.28);
   --overlay: rgba(20, 22, 30, 0.35);

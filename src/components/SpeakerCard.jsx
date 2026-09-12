@@ -11,10 +11,8 @@ export function SpeakerCard({
 }) {
   const isSubmitted = speaker.status === 'submitted';
   const showAffiliation = speaker.category === 'global_links' && speaker.affiliationOrCountry;
-  const platformLine = [speaker.computerOS, (speaker.fileTypes || []).join(', ')]
-    .filter(Boolean)
-    .join(' · ');
-  const hasMeta = isSubmitted && Boolean(platformLine || speaker.submittedAt);
+  const fileTypes = speaker.fileTypes || [];
+  const hasMeta = isSubmitted && Boolean(speaker.computerOS || fileTypes.length || speaker.submittedAt);
 
   const open = () => onOpenEdit(speaker);
 
@@ -80,7 +78,10 @@ export function SpeakerCard({
 
       {hasMeta && (
         <div className="spk-meta">
-          {platformLine && <span>{platformLine}</span>}
+          {speaker.computerOS && <span className="tag tag-os">{speaker.computerOS}</span>}
+          {fileTypes.map(ft => (
+            <span key={ft} className="tag tag-file">{ft}</span>
+          ))}
           {speaker.submittedAt && <span className="spk-time">{speaker.submittedAt}</span>}
         </div>
       )}

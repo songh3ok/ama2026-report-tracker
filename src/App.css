@@ -434,13 +434,39 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px 10px;
-  margin-top: 2px;
+  gap: 4px;
+  margin-top: 4px;
   font-size: 12px;
   color: var(--text-2);
 }
 
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 5px;
+  border: 1px solid;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.tag-os {
+  color: var(--tag-os);
+  background: var(--tag-os-bg);
+  border-color: var(--tag-os-line);
+}
+
+.tag-file {
+  color: var(--tag-file);
+  background: var(--tag-file-bg);
+  border-color: var(--tag-file-line);
+}
+
 .spk-time {
+  margin-left: 4px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-3);
@@ -529,7 +555,19 @@
 }
 
 .spk-compact .spk-meta {
+  gap: 3px;
   font-size: 11px;
+}
+
+.spk-compact .tag {
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10.5px;
+}
+
+.spk-compact .spk-time {
+  flex-basis: 100%;
+  margin-left: 0;
 }
 
 .spk-compact .btn-start {
@@ -1255,12 +1293,20 @@
   border-color: var(--text-3);
 }
 
-.option.selected,
+.option.selected {
+  color: var(--tag-os);
+  background: var(--tag-os-bg);
+  border-color: var(--tag-os);
+  box-shadow: inset 0 0 0 1px var(--tag-os);
+  font-weight: 600;
+}
+
 .chip-opt.selected {
-  color: var(--text);
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--tag-file);
+  background: var(--tag-file-bg);
+  border-color: var(--tag-file);
+  box-shadow: inset 0 0 0 1px var(--tag-file);
+  font-weight: 600;
 }
 
 .field.is-invalid .option:not(.selected),
