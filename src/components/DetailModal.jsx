@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, AlertCircle } from 'lucide-react';
 
-const OS_OPTIONS = ['Windows', 'Mac'];
+const OS_OPTIONS = ['Windows', 'Mac', 'Tab'];
 const FILE_TYPE_OPTIONS = ['PPT', 'Keynote', 'PDF', 'DOCX', 'Image', 'MP4', 'MP3', 'Other'];
 
 export function DetailModal({ speaker, isOpen, onClose, onSave }) {
@@ -44,7 +44,7 @@ export function DetailModal({ speaker, isOpen, onClose, onSave }) {
     setAttemptedSubmit(true);
 
     if (!computerOS) {
-      setErrorMessage('Please select the computer platform (Windows or Mac).');
+      setErrorMessage('Please select the device (Windows, Mac, or Tab).');
       return;
     }
 
