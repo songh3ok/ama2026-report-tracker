@@ -4,6 +4,7 @@ import { INITIAL_SPEAKERS, CONVENTION_INFO } from './data/speakersData';
 import { TimetableGrid } from './components/TimetableGrid';
 import { MobileTimeline } from './components/MobileTimeline';
 import { DetailModal } from './components/DetailModal';
+import { MemoRelay } from './components/MemoRelay';
 import { Download, RotateCcw, Sun, Moon, CheckCircle2, ListOrdered, LayoutGrid } from 'lucide-react';
 
 const STORAGE_KEY = 'ama2026_timetable_en_v1';
@@ -303,6 +304,8 @@ export function App() {
         onClose={() => setSelectedSpeaker(null)}
         onSave={handleSaveModal}
       />
+
+      <MemoRelay />
 
       <footer className="footer">
         The 15th AMA Triennial Convention Incheon 2026 · Organizing Committee

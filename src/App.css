@@ -1698,3 +1698,240 @@
   .toast { font-size: 15px; padding: 12px 18px; }
   .footer { font-size: 14px; }
 }
+
+/* ============================================================
+   Memo relay — live text from phone to computer
+   ============================================================ */
+.relay {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 56px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.relay-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.relay-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.relay-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.relay-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.relay-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+
+.relay-status.is-live {
+  color: var(--ok);
+}
+
+.relay-status.is-live .relay-dot {
+  background: var(--ok);
+  box-shadow: 0 0 0 3px var(--ok-soft);
+}
+
+.relay-status.is-connecting .relay-dot {
+  background: var(--warn);
+}
+
+.relay-status.is-offline {
+  color: var(--danger);
+}
+
+.relay-status.is-offline .relay-dot {
+  background: var(--danger);
+}
+
+.relay-head-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.relay-connect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.relay-connect .text-input {
+  flex: 1 1 220px;
+}
+
+.relay-connect .btn-primary {
+  margin-left: 0;
+}
+
+.relay-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.relay-empty {
+  padding: 18px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+}
+
+.relay-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  animation: relayIn 0.3s ease-out;
+}
+
+.relay-item.is-incoming {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.relay-text {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.relay-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.relay-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.relay-copy:hover {
+  color: var(--text);
+}
+
+.relay-copy.is-copied {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+
+.relay-copy.is-selected {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+
+.relay-compose {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.relay-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  max-height: 160px;
+  padding: 10px 12px;
+  resize: none;
+  border-radius: 9px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.relay-input::placeholder {
+  color: var(--text-3);
+}
+
+.relay-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.relay-send {
+  flex-shrink: 0;
+  height: 42px;
+  margin-left: 0;
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.relay-error {
+  font-size: 13px;
+  color: var(--danger);
+}
+
+@keyframes relayIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .relay { margin-top: 40px; padding: 14px; }
+  .relay-title { font-size: 18px; }
+  .relay-status { font-size: 14px; }
+  .relay-empty { font-size: 15px; }
+  .relay-text { font-size: 16.5px; }
+  .relay-meta { font-size: 14px; }
+  .relay-copy { height: 38px; padding: 0 14px; font-size: 15px; }
+  .relay-input { min-height: 50px; font-size: 16px; }
+  .relay-send { height: 50px; }
+  .relay-connect .text-input { font-size: 16px; }
+  .relay-error { font-size: 15px; }
+}
