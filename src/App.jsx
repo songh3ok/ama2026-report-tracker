@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
 import { INITIAL_SPEAKERS, CONVENTION_INFO } from './data/speakersData';
 import { RESTORED_SUBMISSIONS } from './data/restoredSubmissions';
+import {
+  pickRecord,
+  sameRecord,
+  fetchServerState,
+  saveServerRecord,
+  resetServerState,
+  loadQueue,
+  saveQueue
+} from './lib/trackerSync';
 import { TimetableGrid } from './components/TimetableGrid';
 import { MobileTimeline } from './components/MobileTimeline';
 import { DetailModal } from './components/DetailModal';
@@ -11,6 +20,32 @@ import { Download, RotateCcw, Sun, Moon, CheckCircle2, ListOrdered, LayoutGrid }
 const STORAGE_KEY = 'ama2026_timetable_en_v1';
 const THEME_KEY = 'ama2026_theme';
 const RESTORE_FLAG_KEY = 'ama2026_restored_2026-09-14';
+const RESET_SEEN_KEY = 'ama2026_seen_reset_v1';
+const SYNC_POLL_MS = 8000;
+
+const SYNC_LABEL = {
+  connecting: 'Connecting…',
+  syncing: 'Saving…',
+  synced: 'Live · shared across devices',
+  offline: 'Offline · saved here, will sync',
+  local: 'Saved on this device only'
+};
+
+const readLocal = (key) => {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    return null;
+  }
+};
+
+const writeLocal = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    // storage unavailable
+  }
+};
 
 // One-time recovery of the 2026-09-14 submissions. Never overwrites a submission
 // this browser already has, and runs only once so a later Undo sticks.
@@ -87,6 +122,139 @@ export function App() {
       // storage unavailable (private mode): nothing to remember
     }
   }, [speakers]);
+
+  // ---- Shared server sync (/api/tracker) ----
+  const [syncState, setSyncState] = useState('connecting');
+  const speakersRef = useRef(speakers);
+  const syncRef = useRef({ configured: false, server: {}, queue: loadQueue(), flushing: false, syncing: false });
+
+  useEffect(() => {
+    speakersRef.current = speakers;
+  }, [speakers]);
+
+  // Queue every record that differs from what the server last confirmed
+  const enqueueDiffs = useCallback((list) => {
+    const ref = syncRef.current;
+    if (!ref.configured) return false;
+    let touched = false;
+    for (const item of list) {
+      const record = pickRecord(item);
+      if (sameRecord(record, ref.server[item.id])) {
+        if (ref.queue[item.id]) {
+          delete ref.queue[item.id];
+          touched = true;
+        }
+      } else if (!ref.queue[item.id] || !sameRecord(ref.queue[item.id], record)) {
+        ref.queue[item.id] = record;
+        touched = true;
+      }
+    }
+    if (touched) saveQueue(ref.queue);
+    return Object.keys(ref.queue).length > 0;
+  }, []);
+
+  const flushQueue = useCallback(async () => {
+    const ref = syncRef.current;
+    if (!ref.configured || ref.flushing) return;
+    ref.flushing = true;
+    let failed = false;
+    try {
+      for (const [id, record] of Object.entries({ ...ref.queue })) {
+        const result = await saveServerRecord(id, record);
+        if (!result.configured) {
+          ref.configured = false;
+          setSyncState('local');
+          return;
+        }
+        ref.server[id] = result.record;
+        if (ref.queue[id] && sameRecord(ref.queue[id], record)) delete ref.queue[id];
+      }
+    } catch (e) {
+      failed = true;
+    } finally {
+      ref.flushing = false;
+      saveQueue(ref.queue);
+    }
+    if (failed) setSyncState('offline');
+    else if (Object.keys(ref.queue).length) setTimeout(() => flushQueue(), 0);
+    else setSyncState('synced');
+  }, []);
+
+  const syncWithServer = useCallback(async () => {
+    const ref = syncRef.current;
+    if (ref.syncing) return;
+    ref.syncing = true;
+    try {
+      const state = await fetchServerState();
+      if (!state.configured) {
+        ref.configured = false;
+        setSyncState('local');
+        return;
+      }
+
+      // The shared data was reset since this browser last synced: drop the stale local copy
+      let base = null;
+      const resetAt = Number(state.resetAt || 0);
+      if (resetAt && resetAt > Number(readLocal(RESET_SEEN_KEY) || 0)) {
+        writeLocal(RESET_SEEN_KEY, String(resetAt));
+        ref.queue = {};
+        saveQueue(ref.queue);
+        base = INITIAL_SPEAKERS;
+      }
+
+      ref.configured = true;
+      ref.server = state.items || {};
+      const mergeList = (list) => list.map(item => {
+        if (ref.queue[item.id]) return item;
+        const server = ref.server[item.id];
+        return server && !sameRecord(item, server) ? { ...item, ...pickRecord(server) } : item;
+      });
+
+      const merged = mergeList(base || speakersRef.current);
+      setSpeakers(prev => {
+        const next = mergeList(base || prev);
+        return !base && next.every((item, i) => item === prev[i]) ? prev : next;
+      });
+
+      // Submissions only this browser knows about (e.g. entered before sync existed) go up
+      if (enqueueDiffs(merged)) {
+        setSyncState('syncing');
+        await flushQueue();
+      } else {
+        setSyncState('synced');
+      }
+    } catch (e) {
+      setSyncState('offline');
+    } finally {
+      ref.syncing = false;
+    }
+  }, [enqueueDiffs, flushQueue]);
+
+  // Local edits (submit, update, undo) are pushed as soon as they happen
+  useEffect(() => {
+    if (syncRef.current.configured && enqueueDiffs(speakers)) {
+      setSyncState('syncing');
+      flushQueue();
+    }
+  }, [speakers, enqueueDiffs, flushQueue]);
+
+  // Pull other devices' changes: on load, every few seconds while visible, and on return
+  useEffect(() => {
+    syncWithServer();
+    const refresh = () => {
+      if (document.visibilityState === 'visible') syncWithServer();
+    };
+    const timer = setInterval(refresh, SYNC_POLL_MS);
+    window.addEventListener('focus', refresh);
+    window.addEventListener('online', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('online', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [syncWithServer]);
 
   const showToast = (text) => {
     setToastMsg(text);
@@ -170,11 +338,25 @@ export function App() {
   };
 
   // Reset to default
-  const handleReset = () => {
-    if (window.confirm('Reset all submission data to default?')) {
-      setSpeakers(INITIAL_SPEAKERS);
-      showToast('Data reset to default.');
+  const handleReset = async () => {
+    if (!window.confirm('Reset all submission data to default?')) return;
+    const ref = syncRef.current;
+    if (ref.configured) {
+      try {
+        const result = await resetServerState();
+        if (result.configured) {
+          ref.server = {};
+          ref.queue = {};
+          saveQueue(ref.queue);
+          writeLocal(RESET_SEEN_KEY, String(result.resetAt || Date.now()));
+        }
+      } catch (e) {
+        showToast('Could not reset the shared data. Check the connection and try again.');
+        return;
+      }
     }
+    setSpeakers(INITIAL_SPEAKERS);
+    showToast('Data reset to default.');
   };
 
   // Calculations
@@ -230,7 +412,13 @@ export function App() {
       {/* Summary */}
       <section className="overview" aria-label="Submission summary">
         <div className="overview-main">
-          <div className="overview-label">Materials submitted</div>
+          <div className="overview-label">
+            <span>Materials submitted</span>
+            <span className={`sync-status is-${syncState}`} role="status">
+              <span className="sync-dot" aria-hidden="true" />
+              {SYNC_LABEL[syncState]}
+            </span>
+          </div>
           <div className="overview-figure">
             <span className="figure-num">{submittedCount}</span>
             <span className="figure-total">/ {totalCount}</span>
