@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { INITIAL_SPEAKERS, CONVENTION_INFO } from './data/speakersData';
+import { RESTORED_SUBMISSIONS } from './data/restoredSubmissions';
 import { TimetableGrid } from './components/TimetableGrid';
 import { MobileTimeline } from './components/MobileTimeline';
 import { DetailModal } from './components/DetailModal';
@@ -9,13 +10,28 @@ import { Download, RotateCcw, Sun, Moon, CheckCircle2, ListOrdered, LayoutGrid }
 
 const STORAGE_KEY = 'ama2026_timetable_en_v1';
 const THEME_KEY = 'ama2026_theme';
+const RESTORE_FLAG_KEY = 'ama2026_restored_2026-09-14';
+
+// One-time recovery of the 2026-09-14 submissions. Never overwrites a submission
+// this browser already has, and runs only once so a later Undo sticks.
+const applyRestoredSubmissions = (list) => {
+  try {
+    if (localStorage.getItem(RESTORE_FLAG_KEY)) return list;
+  } catch (e) {
+    return list;
+  }
+  const restored = Object.fromEntries(RESTORED_SUBMISSIONS.map(r => [r.id, r]));
+  return list.map(item => (
+    item.status !== 'submitted' && restored[item.id] ? { ...item, ...restored[item.id] } : item
+  ));
+};
 
 export function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem(THEME_KEY) || 'dark';
   });
 
-  const [speakers, setSpeakers] = useState(() => {
+  const [speakers, setSpeakers] = useState(() => applyRestoredSubmissions((() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -41,7 +57,7 @@ export function App() {
       console.error('Local storage load error:', e);
     }
     return INITIAL_SPEAKERS;
-  });
+  })()));
 
   // View Mode: 'mobile' (touch timeline) vs 'desktop' (full PDF grid)
   const [viewMode, setViewMode] = useState(() => {
@@ -65,6 +81,11 @@ export function App() {
   // Sync state to local storage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(speakers));
+    try {
+      localStorage.setItem(RESTORE_FLAG_KEY, '1');
+    } catch (e) {
+      // storage unavailable (private mode): nothing to remember
+    }
   }, [speakers]);
 
   const showToast = (text) => {
